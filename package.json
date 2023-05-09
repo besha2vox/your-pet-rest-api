@@ -1,0 +1,36 @@
+{
+    "name": "your-pet-rest-api",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node src/server.js",
+        "dev": "nodemon src/server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/besha2vox/your-pet-rest-api.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/besha2vox/your-pet-rest-api/issues"
+    },
+    "homepage": "https://github.com/besha2vox/your-pet-rest-api#readme",
+    "dependencies": {
+        "bcrypt": "^5.1.0",
+        "cors": "2.8.5",
+        "cross-env": "7.0.3",
+        "dotenv": "^16.0.3",
+        "express": "4.17.1",
+        "jimp": "^0.22.7",
+        "joi": "^17.9.1",
+        "jsonwebtoken": "^9.0.0",
+        "mongoose": "^7.0.3",
+        "morgan": "1.10.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.22"
+    }
+}
