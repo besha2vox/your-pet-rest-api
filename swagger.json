@@ -130,7 +130,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/NoticeByCategoryResponse"
+                    "$ref": "#/components/schemas/GetNoticeResponse"
                   }
                 }
               }
@@ -139,6 +139,316 @@
           "404": {
             "description": "No notices found for given category",
             "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": ["Notices"],
+        "summary": "Add notices by category",
+        "parameters": [
+          {
+            "in": "path",
+
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Add notice by category"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetNoticeResponse"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No notices found for given category",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/notices/{id}": {
+      "get": {
+        "tags": ["Notices"],
+        "summary": "Get notice by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Get information about the notice by id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNoticeResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Notice not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Notices"],
+        "summary": "Delete notice by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Delete the notice with the specified ID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Notice not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Notices"],
+        "summary": "Updates notice",
+        "parameters": [
+          {
+            "in": "path",
+
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Updates notice by ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetNoticeResponse"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No notices found for given category",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/notices/{id}/favorite": {
+      "post": {
+        "tags": ["Notices"],
+        "summary": "Adds the notice with the specified ID to the user's favorites list",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "adds notice to favorites"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+
+            "400": {
+              "description": "Invalid request body or parameters"
+            },
+            "401": {
+              "description": "User is not authenticated"
+            },
+            "404": {
+              "description": "Notice with the specified ID not found"
+            },
+            "500": {
+              "description": "Server error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Notices"],
+        "summary": "Removes the notice with the specified ID from the user's favorites list",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the notice to remove from favorites"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid request body or parameters"
+          },
+          "401": {
+            "description": "User is not authenticated"
+          },
+          "404": {
+            "description": "Notice with the specified ID not found or not in favorites list"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/notices/favorite": {
+      "get": {
+        "tags": ["Notices"],
+        "summary": "Get favorite notices",
+        "parameters": [
+          {
+            "in": "path",
+
+            "required": true,
+
+            "description": "Category to filter favorite notices"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetNoticeResponse"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No favorite notices found ",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/notices": {
+      "get": {
+        "tags": ["Notices"],
+        "summary": "Get notices created by user",
+        "parameters": [
+          {
+            "in": "path",
+
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Get notices created by user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetNoticeResponse"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No notices found for given category",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/search/{category}": {
+      "get": {
+        "tags": ["Notices"],
+        "summary": "Search notices by category and query",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "category",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The category to search in"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The search query"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchNoticesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body or parameters"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       }
@@ -240,7 +550,7 @@
           }
         ]
       },
-      "NoticeByCategoryResponse": {
+      "GetNoticeResponse": {
         "type": "array",
         "items": {
           "type": "object",
@@ -301,6 +611,22 @@
             "titleOfAdd": "Looking for good friend"
           }
         ]
+      },
+      "SearchNoticesResponse": {
+        "type": "object",
+        "properties": {
+          "notices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetNoticeResponse"
+            },
+            "description": "List of notices matching the search query"
+          },
+          "totalResults": {
+            "type": "integer",
+            "description": "Total number of results matching the search query"
+          }
+        }
       }
     },
     "securitySchemes": {

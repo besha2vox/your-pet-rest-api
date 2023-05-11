@@ -14,12 +14,20 @@ router.delete("/:id/favorite", auth, ctrl.removeFromFavorite);
 router.post(
   "/:category",
   // auth,
-  noticeValidation,
+  // noticeValidation,
   uploadCloud.single("pets-photo"),
   ctrl.addNotice
 );
-router.get("/my-notices", auth, ctrl.getUsersNotices);
-router.delete("/:contactId", isValidId, auth, ctrl.removeNotice);
+router.get(
+  "/",
+  // auth,
+  ctrl.getUsersNotices
+);
+router.delete(
+  "/:id",
+  // auth,
+  ctrl.removeNotice
+);
 router.get("/search/:category", ctrl.searchByTitle);
 
 router.put("/:id", isValidId, auth, noticeValidation, ctrl.updateNotice);

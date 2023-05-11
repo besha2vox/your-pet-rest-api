@@ -5,7 +5,7 @@ const { ctrlWrapper } = require("../../middlewares");
 
 const removeNotice = async (req, res) => {
   const { _id: ownerId } = req.user;
-
+  // const ownerId = "645d2f7a502bb608851a31f4";
   const { id: noticeId } = req.params;
 
   const notice = await Notice.findById(noticeId);

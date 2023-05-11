@@ -63,13 +63,20 @@ const addNoticeJoiSchema = Joi.object({
       "any.required": "Choose category",
       "any.only": "Invalid category value",
     }),
-  titleOfAdd: Joi.string().min(8).max(60).allow(null).messages({
+  titleOfAdd: Joi.string().min(8).max(60).messages({
     "string.min": "Title of add must have at least 8 characters",
     "string.max": "Title of add cannot exceed 60 characters",
   }),
 }).options({ abortEarly: false });
 
 const noticeValidation = (req, res, next) => {
+  const data = {};
+  for (const [key, value] of Object.entries(req.body)) {
+    if (key !== "pets-photo") {
+      data[key] = value;
+    }
+  }
+  req.body = data;
   const { error } = addNoticeJoiSchema.validate(req.body);
   if (error) {
     return next(new RequestError(400, error.message));

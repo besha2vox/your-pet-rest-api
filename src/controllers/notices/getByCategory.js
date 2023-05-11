@@ -2,8 +2,6 @@ const { Notice } = require("../../db/models");
 const { RequestError } = require("../../helpers");
 const { ctrlWrapper } = require("../../middlewares");
 
-// const imagesDir = path.join(__dirname, "../../", "public", "pets-photo");
-
 const getByCategory = async (req, res) => {
   const { page = 1, limit = 12 } = req.query;
   const skip = (page - 1) * limit;
