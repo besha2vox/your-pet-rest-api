@@ -1,9 +1,14 @@
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
+require("dotenv").config();
 // const Test = require('./db/models/test');
 
-require("dotenv").config();
+const usersRouter = require("../routes/api/users");
+const noticesRouter = require("../routes/api/notices");
+const petsRouter = require("../routes/api/pets");
+const newsRouter = require("../routes/api/news");
+const ourFriendsRouter = require("../routes/api/ourFriends");
 
 const app = express();
 
@@ -13,6 +18,12 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
+
+app.use("/api/users", usersRouter);
+app.use("/api/notices", noticesRouter);
+app.use("/api/pets", petsRouter);
+app.use("/api/news", newsRouter);
+app.use("/api/our-friends", ourFriendsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
