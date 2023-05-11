@@ -67,6 +67,7 @@ const addNoticeJoiSchema = Joi.object({
     "string.min": "Title of add must have at least 8 characters",
     "string.max": "Title of add cannot exceed 60 characters",
   }),
+  favorite: Joi.array(),
 }).options({ abortEarly: false });
 
 const noticeValidation = (req, res, next) => {
