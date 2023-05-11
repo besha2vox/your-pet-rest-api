@@ -39,7 +39,7 @@ userSchema.post("save", handleMongooseError);
 const schemas = {
   // Create new user schema
   registerSchema: Joi.object({
-    name: Joi.string().required,
+    username: Joi.string().required(),
     email: Joi.string().pattern(emailRegex).required(),
     password: Joi.string().min(8).required(),
   }),

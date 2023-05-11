@@ -1,3 +1,4 @@
 const handleMongooseError = require("./handleMongooseError");
+const controllerWrap = require("./controllerWrap");
 
-module.exports = { handleMongooseError };
+module.exports = { handleMongooseError, controllerWrap };

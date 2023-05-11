@@ -1,12 +1,12 @@
 const express = require("express");
-
-// Закоментував тому, що поки змінна ніде не використана - eslint видає помилку
-// const { users: ctrl } = require("../../controllers");
+const { validation } = require("../../middlewares");
+const { registerSchema } = require("../../models");
+const { users: ctrl } = require("../../controllers");
 
 const router = express.Router();
 
 // Register
-router.post("/register");
+router.post("/register", validation(registerSchema), ctrl.register);
 
 // Log in
 
