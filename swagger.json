@@ -13,12 +13,16 @@
   "produces": ["application/json"],
   "servers": [
     { "url": "http://localhost:3000" },
-    { "url": "Додати url після деплою на Рендер/Хероку" }
+    { "url": "https://your-pet-by-it-kotiki.onrender.com" }
   ],
   "tags": [
     {
       "name": "Auth",
       "description": "Authorization endpoints"
+    },
+    {
+      "name": "News",
+      "description": "News endpoints"
     }
   ],
   "paths": {
@@ -57,6 +61,43 @@
           "409": {
             "description": "Provided email already exists",
             "content": {}
+          }
+        }
+      }
+    },
+    "/api/news": {
+      "get": {
+        "tags": ["News"],
+        "summary": "News about pets",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "string",
+            "description": "Page number for pagination. Default 1."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "string",
+            "description": "Count of articles per page. Default 6."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNewsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       }
@@ -100,6 +141,62 @@
         "example": [
           { "email": "1@gmail.com", "userId": "1" },
           { "email": "2@gmail.com", "userId": "2" }
+        ]
+      },
+      "GetNewsResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "Article's id from DB"
+            },
+            "imgUrl": {
+              "type": "string",
+              "description": "Article's Image"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            },
+            "text": {
+              "type": "string",
+              "description": "Text"
+            },
+            "date": {
+              "type": "string",
+              "description": "Release Date"
+            },
+            "url": {
+              "type": "string",
+              "description": "Link"
+            },
+            "id": {
+              "type": "string",
+              "description": "Article's id from source"
+            }
+          }
+        },
+        "example": [
+          {
+            "_id": "645cdf279f3f111d137d54e8",
+            "imgUrl": "https://www.nytimes.com/images/2023/04/16/magazine/16mag-LOR/16mag-LOR-blog480.jpg",
+            "title": "What I Learned Dogsitting for New York City’s Opulent Elite",
+            "text": "In a city of yawning class inequality, some side hustles let you glimpse how the other half lives.",
+            "date": "2023-04-11T09:00:18+0000",
+            "url": "https://www.nytimes.com/2023/04/11/magazine/dogsitting-rich-new-york.html",
+            "id": "nyt://article/8d29f1fc-d146-509d-8ceb-5a5b17d7886b"
+          },
+          {
+            "_id": "645cdf279f3f111d137d54e9",
+            "imgUrl": "https://www.nytimes.com/images/2023/04/04/multimedia/00VIRTUAL-VETS-01b-fmzk/00VIRTUAL-VETS-01b-fmzk-blog480.jpg",
+            "title": "The Virtual Vet Will See You Meow",
+            "text": "Veterinary telemedicine could help more pet owners access much-needed care and put anxious animals at ease, but challenges remain.",
+            "date": "2023-04-07T09:00:46+0000",
+            "url": "https://www.nytimes.com/2023/04/07/health/vet-pet-health-telemedicine.html",
+            "id": "nyt://article/992f2f7f-793c-5553-b722-348625f53a4b"
+          }
         ]
       }
     },
