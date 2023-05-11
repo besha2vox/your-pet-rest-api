@@ -13,7 +13,7 @@ const {
 } = require("../../middlewares");
 
 const { noticesSchema: schemas } = require("../../models");
-const { notices: ctrl } = require("../../../controllers");
+const { notices: ctrl } = require("../../controllers");
 
 router.get("/:category", ctrl.getByCategory);
 router.get("/:id", ctrl.getNoticeById);
