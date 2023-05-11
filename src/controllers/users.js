@@ -1,6 +1,9 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { User } = require("../db/models");
 const { controllerWrap } = require("../utils/validation");
+
+const { SECRET_KEY } = process.env;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -18,7 +21,14 @@ const register = async (req, res) => {
       password: hashPassword,
     });
 
+    const payload = {
+      id: result._id,
+    };
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "12h" });
+    await User.findByIdAndUpdate(result._id, { token });
+
     res.status(201).json({
+      token,
       user: {
         username: result.username,
         email: result.email,
