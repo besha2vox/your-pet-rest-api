@@ -12,7 +12,7 @@ const router = express.Router();
 //   // uploadCloud,
 // } = require("../../middlewares");
 
-// // const { addNoticeJoiSchema } = require("../../models");
+// const { addNoticeJoiSchema } = require("../../models");
 // const { notices: ctrl } = require("../../controllers");
 
 // router.get("/:category", ctrl.getByCategory);

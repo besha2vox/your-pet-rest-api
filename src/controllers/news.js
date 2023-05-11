@@ -1,4 +1,4 @@
-const { News } = require("../models");
+const { News } = require("../db/models");
 
 const getAllNews = async (req, res) => {
   const { page = 1, limit = 6 } = req.query;
