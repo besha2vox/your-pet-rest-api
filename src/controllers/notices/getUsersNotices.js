@@ -1,4 +1,4 @@
-const { Notice } = require("../../models");
+const { Notice } = require("../../db/models");
 const { RequestError } = require("../../helpers");
 const { ctrlWrapper } = require("../../middlewares");
 

@@ -1,6 +1,6 @@
-const { Notice } = require("../../models");
+const { Notice } = require("../../db/models");
 
-const { RequestError } = require("../../helpers/requestError");
+const { RequestError } = require("../../helpers");
 const { ctrlWrapper } = require("../../middlewares");
 
 const searchByTitle = async (req, res) => {
