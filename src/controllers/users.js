@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require("../db/models");
+const { RequestError } = require("../helpers");
 const { controllerWrap } = require("../utils/validation");
 
 const { SECRET_KEY } = process.env;
@@ -15,10 +16,9 @@ const generateToken = (id) => {
 
 const register = async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
   const user = await User.findOne({ email });
   if (user) {
-    return res.status(409).json({ message: "Email in use" });
+    throw new RequestError(409, "Email in use");
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
@@ -41,10 +41,45 @@ const register = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Internal server error" });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new RequestError(400, "Email or password is wrong");
+    }
+
+    const comparePassword = await bcrypt.compare(password, user.password);
+    if (!comparePassword) {
+      throw new RequestError(400, "Email or password is wrong");
+    }
+
+    const token = generateToken(user._id);
+    await User.findByIdAndUpdate(user._id, { token });
+
+    res.status(201).json({
+      token,
+      user: {
+        username: user.username,
+        email,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Internal server error" });
   }
 };
 
 module.exports = {
   register: controllerWrap(register),
+  login: controllerWrap(login),
 };

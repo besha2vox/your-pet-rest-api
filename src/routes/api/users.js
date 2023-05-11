@@ -9,11 +9,10 @@ const router = express.Router();
 router.post("/register", validation(schemas.registerSchema), ctrl.register);
 
 // Log in
+router.post("/login", validation(schemas.loginSchema), ctrl.login);
 
 // Get current User
 
 // Log out
-
-// Update User data
 
 module.exports = router;
