@@ -1,7 +1,6 @@
 const { Schema, model } = require("mongoose");
 const Joi = require("joi");
-const { handleValidationErrors } = require("../errorHandlers");
-
+const { handleSchemaValidationError } = require("../helpers");
 const petSchema = Schema(
   {
     name: {
@@ -50,8 +49,7 @@ const petSchema = Schema(
   { versionKey: false, timestamps: true }
 );
 
-petSchema.post("save", handleValidationErrors);
-
+petSchema.post("save", handleSchemaValidationError);
 const addPetJoiSchema = Joi.object({
   name: Joi.string()
     .min(2)

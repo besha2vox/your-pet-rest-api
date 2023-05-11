@@ -1,6 +1,6 @@
 const { Notice } = require("../../models");
-const { RequestError } = require("../../errorHandlers");
-const { ctrlWrapper } = require("../../src/utils");
+const { RequestError } = require("../../helpers");
+const { ctrlWrapper } = require("../../middlewares");
 
 // const imagesDir = path.join(__dirname, "../../", "public", "pets-photo");
 

@@ -1,4 +1,4 @@
-const users = require("./users");
+const users = require("../../controllers/users");
 const notices = require("./notices");
 const pets = require("./pets");
 const news = require("./news");

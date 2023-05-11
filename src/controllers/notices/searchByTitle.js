@@ -1,6 +1,7 @@
 const { Notice } = require("../../models");
-const { RequestError } = require("../../errorHandlers");
-const { ctrlWrapper } = require("../../src/utils");
+
+const { RequestError } = require("../../helpers/requestError");
+const { ctrlWrapper } = require("../../middlewares");
 
 const searchByTitle = async (req, res) => {
   const { page = 1, limit = 12, q } = req.query;

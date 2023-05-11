@@ -1,8 +1,7 @@
 const { Notice } = require("../../models");
-const { RequestError } = require("../../errorHandlers");
-const { ctrlWrapper } = require("../../src/utils");
 
-// const imagesDir = path.join(__dirname, "../../", "public", "pets-photo");
+const { RequestError } = require("../../helpers");
+const { ctrlWrapper } = require("../../middlewares");
 
 const updateNotice = async (req, res) => {
   const { _id: ownerId } = req.user;

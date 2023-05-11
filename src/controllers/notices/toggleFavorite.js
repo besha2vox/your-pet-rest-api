@@ -1,6 +1,7 @@
 const { User } = require("../../models");
-const { ctrlWrapper } = require("../../utils");
-const { RequestError } = require("../../errorHandlers/");
+
+const { RequestError } = require("../../helpers");
+const { ctrlWrapper } = require("../../middlewares");
 
 const toggleFavorite = async (req, res) => {
   const { _id: userId } = req.user;
