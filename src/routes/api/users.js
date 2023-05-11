@@ -1,12 +1,12 @@
 const express = require("express");
 const { validation } = require("../../middlewares");
-const { registerSchema } = require("../../models");
+const { schemas } = require("../../db/models");
 const { users: ctrl } = require("../../controllers");
 
 const router = express.Router();
 
 // Register
-router.post("/register", validation(registerSchema), ctrl.register);
+router.post("/register", validation(schemas.registerSchema), ctrl.register);
 
 // Log in
 
