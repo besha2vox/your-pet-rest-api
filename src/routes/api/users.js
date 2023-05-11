@@ -5,4 +5,15 @@ const express = require("express");
 
 const router = express.Router();
 
+// Register
+router.post("/register");
+
+// Log in
+
+// Get current User
+
+// Log out
+
+// Update User data
+
 module.exports = router;
