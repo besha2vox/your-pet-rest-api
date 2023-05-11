@@ -12,7 +12,9 @@ const getUsersNotices = async (req, res) => {
   const notices = await Notice.find({ owner }, "-createdAt -updatedAt", {
     skip,
     limit: Number(limit),
-  }).populate("owner", "name email phone");
+  })
+    .sort({ createdAt: -1 })
+    .populate("owner", "name email phone");
 
   if (!notices) {
     console.log(owner, "owner");

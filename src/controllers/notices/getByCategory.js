@@ -14,17 +14,21 @@ const getByCategory = async (req, res) => {
       skip,
       limit: Number(limit),
     }
-  );
+  ).sort({ createdAt: -1 });
 
   if (!notices) {
     throw new RequestError(404, `no match for your request`);
   }
+  const totalCount = await Notice.countDocuments({
+    category: { $regex: `^${category}`, $options: "i" },
+  });
 
   res.status(201).json({
     status: "success",
     code: 200,
     data: {
       result: notices,
+      totalResults: totalCount,
     },
   });
 };

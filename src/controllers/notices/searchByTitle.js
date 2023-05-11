@@ -27,7 +27,7 @@ const searchByTitle = async (req, res) => {
       skip,
       limit: Number(limit),
     }
-  );
+  ).sort({ createdAt: -1 });
 
   if (!notices || notices.length === 0) {
     throw new RequestError(404, `no match for your search`);
