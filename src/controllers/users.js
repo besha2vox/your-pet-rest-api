@@ -5,6 +5,14 @@ const { controllerWrap } = require("../utils/validation");
 
 const { SECRET_KEY } = process.env;
 
+const generateToken = (id) => {
+  const payload = {
+    id,
+  };
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "12h" });
+  return token;
+};
+
 const register = async (req, res) => {
   const { email, password } = req.body;
   console.log(req.body);
@@ -21,10 +29,7 @@ const register = async (req, res) => {
       password: hashPassword,
     });
 
-    const payload = {
-      id: result._id,
-    };
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "12h" });
+    const token = generateToken(result._id);
     await User.findByIdAndUpdate(result._id, { token });
 
     res.status(201).json({
