@@ -6,6 +6,7 @@ const { isValidId, auth, uploadCloud } = require("../../middlewares");
 
 const { noticeValidation } = require("../../middlewares");
 const { notices: ctrl } = require("../../controllers");
+
 router.get("/:category", ctrl.getByCategory);
 router.get("/:id", ctrl.getNoticeById);
 router.post("/:id/favorite", isValidId, auth, ctrl.addToFavorite);

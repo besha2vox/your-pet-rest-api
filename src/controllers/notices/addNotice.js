@@ -11,9 +11,9 @@ const addNotice = async (req, res) => {
   }
   const noticeData = req.body;
 
-  // if (!req.file) {
-  //   throw new RequestError(400, `no file uploaded`);
-  // }
+  if (!req.file) {
+    throw new RequestError(400, `no file uploaded`);
+  }
 
   const data = req.file
     ? { owner, ...noticeData, category, avatarURL: req.file.path }
