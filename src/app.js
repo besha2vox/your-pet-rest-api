@@ -5,11 +5,11 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("../swagger.json");
 require("dotenv").config();
 
-const usersRouter = require("../routes/api/users");
-const noticesRouter = require("../routes/api/notices");
-const petsRouter = require("../routes/api/pets");
-const newsRouter = require("../routes/api/news");
-const ourFriendsRouter = require("../routes/api/ourFriends");
+const usersRouter = require("./routes/api/users");
+const noticesRouter = require("./routes/api/notices");
+const petsRouter = require("./routes/api/pets");
+const newsRouter = require("./routes/api/news");
+const ourFriendsRouter = require("./routes/api/ourFriends");
 
 const app = express();
 

@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const { handleSchemaValidationError } = require("../helpers");
+const { handleSchemaValidationError } = require("../src/helpers");
 
 const newsSchema = new Schema(
   {
