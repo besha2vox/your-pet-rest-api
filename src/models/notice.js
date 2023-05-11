@@ -1,7 +1,6 @@
 const { Schema, model } = require("mongoose");
 const Joi = require("joi");
-const { handleValidationErrors } = require("../errorHandlers");
-
+const { handleSchemaValidationError } = require("../helpers");
 const noticeSchema = Schema(
   {
     name: {
@@ -77,7 +76,7 @@ const noticeSchema = Schema(
   { versionKey: false, timestamps: true }
 );
 
-noticeSchema.post("save", handleValidationErrors);
+noticeSchema.post("save", handleSchemaValidationError);
 
 const addNoticeJoiSchema = Joi.object({
   name: Joi.string()

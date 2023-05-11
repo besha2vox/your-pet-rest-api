@@ -1,6 +1,6 @@
 const { Notice } = require("../../models");
-
-const { RequestError } = require("../../errorHandlers");
+const { RequestError } = require("../../helpers");
+const { ctrlWrapper } = require("../../middlewares");
 
 const getNoticeById = async (req, res) => {
   const { id } = req.params;
@@ -17,4 +17,4 @@ const getNoticeById = async (req, res) => {
   });
 };
 
-module.exports = getNoticeById;
+module.exports = { getNoticeById: ctrlWrapper(getNoticeById) };

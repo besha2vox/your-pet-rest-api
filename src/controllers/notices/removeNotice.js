@@ -1,6 +1,7 @@
 const { Notice } = require("../../models");
-const { RequestError } = require("../../errorHandlers");
-const { ctrlWrapper } = require("../../src/utils");
+
+const { RequestError } = require("../../helpers/requestError");
+const { ctrlWrapper } = require("../../middlewares");
 
 const removeNotice = async (req, res) => {
   const { _id: ownerId } = req.user;

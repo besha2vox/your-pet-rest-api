@@ -1,6 +1,6 @@
 const { Notice, User } = require("../../models");
-const { RequestError } = require("../../errorHandlers");
-const { ctrlWrapper } = require("../../src/utils");
+const { RequestError } = require("../../helpers");
+const { ctrlWrapper } = require("../../middlewares");
 
 // not ready art all
 const getFavoriteNotices = async (req, res) => {
