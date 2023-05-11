@@ -19,6 +19,10 @@
     {
       "name": "Auth",
       "description": "Authorization endpoints"
+    },
+    {
+      "name": "Notices",
+      "description": "Endpoints for notices managing"
     }
   ],
   "paths": {
@@ -56,6 +60,43 @@
           },
           "409": {
             "description": "Provided email already exists",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/notices/{category}": {
+      "get": {
+        "tags": ["Notices"],
+        "summary": "Get notices by category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "category",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "sell"
+            },
+            "description": "Category to filter notices by category"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NoticeByCategoryResponse"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No notices found for given category",
             "content": {}
           }
         }
@@ -100,6 +141,68 @@
         "example": [
           { "email": "1@gmail.com", "userId": "1" },
           { "email": "2@gmail.com", "userId": "2" }
+        ]
+      },
+      "NoticeByCategoryResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "titleOfAdd": {
+              "type": "string",
+              "description": "Title of notice"
+            },
+            "name": {
+              "type": "string",
+              "description": "Pet's name"
+            },
+            "birthday": {
+              "type": "string",
+              "description": "Pet's birthday"
+            },
+            "breed": {
+              "type": "string",
+              "description": "Pet's breed"
+            },
+            "location": {
+              "type": "string",
+              "description": "Pet's location"
+            },
+            "price": {
+              "type": "number",
+              "description": "price for pet"
+            },
+            "sex": {
+              "type": "string",
+              "description": "Pet's sex"
+            },
+            "avatarURL": {
+              "type": "string",
+              "description": "Pet's image url"
+            },
+            "comments": {
+              "type": "string",
+              "description": "comments about pet"
+            },
+            "category": {
+              "type": "string",
+              "description": "Pet's category"
+            }
+          }
+        },
+        "example": [
+          {
+            "name": "Luna",
+            "birthday": "2019-01-04T22:00:00.000Z",
+            "breed": "Golden Retriever",
+            "location": "Los Angeles",
+            "price": 250,
+            "sex": "female",
+            "avatarURL": "https://images.unsplash.com/photo-1592754862816-1a21a4ea2281?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+            "comments": "Loves to play fetch and swim in the pool. Good with kids and other pets.",
+            "category": "sell",
+            "titleOfAdd": "Looking for good friend"
+          }
         ]
       }
     },

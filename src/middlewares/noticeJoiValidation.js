@@ -13,7 +13,7 @@ const addNoticeJoiSchema = Joi.object({
       "string.max": "Name cannot exceed 16 characters",
       "string.pattern.base": "Name must only contain letters",
     }),
-  birthday: Joi.date().required().messages({
+  birthday: Joi.string().required().messages({
     "any.required": "Set birthday for pet",
     "date.base": "Invalid date format",
   }),
@@ -31,6 +31,7 @@ const addNoticeJoiSchema = Joi.object({
   location: Joi.string().required().messages({
     "any.required": "Set location",
   }),
+  avatarURL: Joi.string(),
   price: Joi.number()
     .min(1)
     .when("category", {

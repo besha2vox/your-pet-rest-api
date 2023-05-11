@@ -11,15 +11,15 @@ const noticeSchema = Schema(
       match: /^[a-zA-Z]+$/,
     },
     birthday: {
-      type: Date,
+      type: String,
       required: true,
-      validate: {
-        validator: function (value) {
-          return /^([0-2]\d|3[0-1])\.(0\d|1[0-2])\.\d{4}$/.test(value);
-        },
-        message: (props) =>
-          `${props.value} is not a valid birthdate format (DD.MM.YYYY)`,
-      },
+      // validate: {
+      //   validator: function (value) {
+      //     return /^([0-2]\d|3[0-1])\.(0\d|1[0-2])\.\d{4}$/.test(value);
+      //   },
+      //   message: (props) =>
+      //     `${props.value} is not a valid birthdate format (DD.MM.YYYY)`,
+      // },
     },
 
     breed: {
