@@ -2,7 +2,10 @@
   "name": "your-pet-rest-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/server.js",
     "start:dev": "cross-env NODE_ENV=development nodemon src/server.js",
