@@ -1,8 +1,11 @@
+const { News } = require("../models");
+
 const getAllNews = async (req, res) => {
+  const result = await News.find();
   res.json({
     status: "success",
     code: 200,
-    data: "Get All News Controller",
+    data: { result },
   });
 };
 
