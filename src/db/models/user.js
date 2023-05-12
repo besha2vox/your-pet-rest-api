@@ -3,6 +3,7 @@ const Joi = require("joi");
 const { handleMongooseError } = require("../../utils/validation");
 
 const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const mobileRegexp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 
 const userSchema = new Schema(
   {
@@ -25,7 +26,36 @@ const userSchema = new Schema(
       type: String,
       default: "",
     },
+
+    phone: {
+      type: String,
+      required: [true, "Set your mobile phone"],
+    },
+    city: {
+      type: String,
+      required: [true, "Set your city"],
+      match: /^[a-zA-Z]+$/,
+    },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      required: [true, "Verify token is required"],
+    },
+    avatarURL: {
+      type: String,
+      required: true,
+    },
+    firstVisit: {
+      type: Boolean,
+      default: true,
+    },
     favorite: {
+      type: [],
+    },
+    pets: {
       type: [],
     },
   },
@@ -47,6 +77,22 @@ const schemas = {
   loginSchema: Joi.object({
     email: Joi.string().pattern(emailRegex).required(),
     password: Joi.string().min(8).required(),
+  }),
+  // Update user schema
+  updateSchema: Joi.object({
+    username: Joi.string().required(),
+    birthday: Joi.date().required().messages({
+      "any.required": "Set your birthday",
+      "date.base": "Invalid date format",
+    }),
+    city: Joi.string()
+      .pattern(/^[a-zA-Z]+$/)
+      .messages({
+        "any.required": "Set your city",
+      }),
+    mobilePhone: Joi.string().pattern(mobileRegexp).required().messages({
+      "any.required": "Set your mobile phone number",
+    }),
   }),
 };
 
