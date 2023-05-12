@@ -27,6 +27,7 @@ router.delete(
 router.post(
   "/:category",
   // auth,
+
   // noticeValidation,
   uploadCloud.single("pets-photo"),
   ctrl.addNotice

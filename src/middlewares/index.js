@@ -4,7 +4,7 @@ const isValidId = require("./isValidId");
 const auth = require("./auth");
 const uploadCloud = require("./uploadCloud");
 const petValidation = require("./petJoiValidation");
-const noticeValidation = require("./noticeJoiValidation");
+const { noticeValidation } = require("./noticeJoiValidation");
 
 module.exports = {
   validation,
