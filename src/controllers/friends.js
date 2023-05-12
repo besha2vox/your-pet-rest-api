@@ -7,8 +7,13 @@ const getAllFriends = async (req, res) => {
     skip,
     limit: Number(limit),
   });
-  res.json({
+  const totalHints = await Friends.count();
+
+  res.status(200).json({
     result,
+    page: Number(page),
+    hints: Number(limit),
+    totalHints,
   });
 };
 

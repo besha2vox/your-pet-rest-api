@@ -9,8 +9,13 @@ const getAllNews = async (req, res) => {
     skip,
     limit: Number(limit),
   });
+  const totalHints = await News.count();
+
   res.status(200).json({
     result,
+    page: Number(page),
+    hints: Number(limit),
+    totalHints,
   });
 };
 
@@ -41,8 +46,21 @@ const getNewsByQuery = async (req, res) => {
     throw new RequestError(404, `No match for your search`);
   }
 
+  const totalHints = await News.count({
+    $and: [
+      {
+        $or: regexExpressions.map((expression) => ({
+          title: { $regex: expression },
+        })),
+      },
+    ],
+  });
+
   res.status(200).json({
     result,
+    page: Number(page),
+    hints: Number(limit),
+    totalHints,
   });
 };
 
