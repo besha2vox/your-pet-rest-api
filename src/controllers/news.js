@@ -1,4 +1,6 @@
 const { News } = require("../db/models");
+const { RequestError } = require("../helpers");
+const { ctrlWrapper } = require("../middlewares");
 
 const getAllNews = async (req, res) => {
   const { page = 1, limit = 6 } = req.query;
@@ -7,9 +9,44 @@ const getAllNews = async (req, res) => {
     skip,
     limit: Number(limit),
   });
-  res.json({
+  res.status(200).json({
     result,
   });
 };
 
-module.exports = { getAllNews };
+const getNewsByQuery = async (req, res) => {
+  const { page = 1, limit = 6, query } = req.query;
+  const skip = (page - 1) * limit;
+  const searchWords = query.trim().split(" ");
+  const regexExpressions = searchWords.map((word) => new RegExp(word, "i"));
+
+  const result = await News.find(
+    {
+      $and: [
+        {
+          $or: regexExpressions.map((expression) => ({
+            title: { $regex: expression },
+          })),
+        },
+      ],
+    },
+    "imgUrl title text date url",
+    {
+      skip,
+      limit: Number(limit),
+    }
+  ).sort({ date: -1 });
+
+  if (!result || result.length === 0) {
+    throw new RequestError(404, `No match for your search`);
+  }
+
+  res.status(200).json({
+    result,
+  });
+};
+
+module.exports = {
+  getAllNews: ctrlWrapper(getAllNews),
+  getNewsByQuery: ctrlWrapper(getNewsByQuery),
+};
