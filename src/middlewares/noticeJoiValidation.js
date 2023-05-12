@@ -13,7 +13,7 @@ const addNoticeJoiSchema = Joi.object({
       "string.max": "Name cannot exceed 16 characters",
       "string.pattern.base": "Name must only contain letters",
     }),
-  birthday: Joi.date().required().messages({
+  birthday: Joi.string().required().messages({
     "any.required": "Set birthday for pet",
     "date.base": "Invalid date format",
   }),
@@ -31,6 +31,7 @@ const addNoticeJoiSchema = Joi.object({
   location: Joi.string().required().messages({
     "any.required": "Set location",
   }),
+  avatarURL: Joi.string(),
   price: Joi.number()
     .min(1)
     .when("category", {
@@ -62,13 +63,21 @@ const addNoticeJoiSchema = Joi.object({
       "any.required": "Choose category",
       "any.only": "Invalid category value",
     }),
-  titleOfAdd: Joi.string().min(8).max(60).allow(null).messages({
+  titleOfAdd: Joi.string().min(8).max(60).messages({
     "string.min": "Title of add must have at least 8 characters",
     "string.max": "Title of add cannot exceed 60 characters",
   }),
+  favorite: Joi.array(),
 }).options({ abortEarly: false });
 
 const noticeValidation = (req, res, next) => {
+  const data = {};
+  for (const [key, value] of Object.entries(req.body)) {
+    if (key !== "pets-photo") {
+      data[key] = value;
+    }
+  }
+  req.body = data;
   const { error } = addNoticeJoiSchema.validate(req.body);
   if (error) {
     return next(new RequestError(400, error.message));
