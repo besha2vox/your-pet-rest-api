@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const moment = require("moment");
+// const moment = require("moment");
 const { handleSchemaValidationError } = require("../../helpers");
 const noticeSchema = Schema(
   {
@@ -8,7 +8,6 @@ const noticeSchema = Schema(
       required: [true, "Set name for pet"],
       minlength: 2,
       maxlength: 16,
-      match: /^[a-zA-Z]+$/,
     },
     birthday: {
       type: String,
@@ -20,7 +19,6 @@ const noticeSchema = Schema(
       required: [true, "Set type of breed"],
       minlength: 2,
       maxlength: 16,
-      match: /^[a-zA-Z]+$/,
     },
     location: {
       type: String,
@@ -70,12 +68,13 @@ const noticeSchema = Schema(
   { versionKey: false, timestamps: true }
 );
 
-noticeSchema.pre("save", function (next) {
-  if (this.birthday) {
-    this.birthday = moment(this.birthday).toDate();
-  }
-  next();
-});
+// noticeSchema.pre("save", function (next) {
+//   if (this.birthday) {
+//     console.log(this.birthday, "this.birthday");
+//     this.birthday = moment(this.birthday).toDate();
+//   }
+//   next();
+// });
 
 noticeSchema.post("save", handleSchemaValidationError);
 

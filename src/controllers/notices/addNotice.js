@@ -3,8 +3,8 @@ const { RequestError } = require("../../helpers");
 const { ctrlWrapper } = require("../../middlewares");
 
 const addNotice = async (req, res) => {
-  // const { _id: owner } = req.user;
-  const owner = "645d2f7a502bb608851a31f4";
+  const { _id: owner } = req.user;
+  // const owner = "645d2f7a502bb608851a31f4";
   const { category } = req.params;
   if (!req.body) {
     throw new RequestError(400, `there is no body content`);
