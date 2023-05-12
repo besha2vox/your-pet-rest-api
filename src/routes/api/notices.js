@@ -8,7 +8,7 @@ const {
   uploadCloud,
 } = require("../../middlewares");
 
-const { noticeValidation } = require("../../middlewares");
+// const { noticeValidation } = require("../../middlewares");
 const { notices: ctrl } = require("../../controllers");
 
 router.get("/:category", ctrl.getByCategory);
@@ -43,6 +43,10 @@ router.delete(
 );
 router.get("/search/:category", ctrl.searchByTitle);
 
-router.put("/:id", auth, noticeValidation, ctrl.updateNotice);
+router.put(
+  "/:id",
+  // auth, noticeValidation,
+  ctrl.updateNotice
+);
 
 module.exports = router;
