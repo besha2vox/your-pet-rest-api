@@ -1,4 +1,6 @@
 const Joi = require("joi");
+const multer = require("multer");
+const upload = multer();
 const { RequestError } = require("../helpers");
 
 const addNoticeJoiSchema = Joi.object({
@@ -13,10 +15,7 @@ const addNoticeJoiSchema = Joi.object({
       "string.max": "Name cannot exceed 16 characters",
       "string.pattern.base": "Name must only contain letters",
     }),
-  birthday: Joi.string().required().messages({
-    "any.required": "Set birthday for pet",
-    "date.base": "Invalid date format",
-  }),
+  birthday: Joi.string().required(),
   breed: Joi.string()
     .min(2)
     .max(16)
@@ -31,7 +30,7 @@ const addNoticeJoiSchema = Joi.object({
   location: Joi.string().required().messages({
     "any.required": "Set location",
   }),
-  avatarURL: Joi.string(),
+  avatarURL: Joi.binary().required(),
   price: Joi.number()
     .min(1)
     .when("category", {
@@ -57,7 +56,7 @@ const addNoticeJoiSchema = Joi.object({
     "string.max": "Comments cannot exceed 120 characters",
   }),
   category: Joi.string()
-    .valid("sell", "lost-found", "inGoodHands")
+    .valid("sell", "lost-found", "in-good-hands")
     .required()
     .messages({
       "any.required": "Choose category",
@@ -68,21 +67,73 @@ const addNoticeJoiSchema = Joi.object({
     "string.max": "Title of add cannot exceed 60 characters",
   }),
   favorite: Joi.array(),
-}).options({ abortEarly: false });
+})
+  .options({ abortEarly: false })
+  .unknown(true);
 
-const noticeValidation = (req, res, next) => {
-  const data = {};
-  for (const [key, value] of Object.entries(req.body)) {
-    if (key !== "pets-photo") {
-      data[key] = value;
+// const noticeValidation = async (req, res, next) => {
+//   const data = {};
+//   console.log(req.body, "BODYY");
+//   for (const [key, value] of Object.entries(req.body)) {
+//     if (key !== "pets-photo") {
+//       data[key] = value;
+//     }
+//   }
+//   console.log(data, "data");
+//   req.body = data;
+//   const { error } = addNoticeJoiSchema.validate(req.body);
+//   if (error) {
+//     return next(new RequestError(400, error.message));
+//   }
+//   next();
+// };
+
+// const noticeValidation = async (formData) => {
+//   console.log(formData.entries);
+//   try {
+//     const data = {};
+//     for (const [key, value] of formData.entries()) {
+//       if (key === "pets-photo") {
+//         data[key] = await value.arrayBuffer();
+//       } else {
+//         data[key] = value;
+//       }
+//     }
+//     const validatedData = await addNoticeJoiSchema.validateAsync(data);
+//     validatedData.birthday = moment(validatedData.birthday).toDate();
+//     return validatedData;
+//   } catch (err) {
+//     throw new RequestError(400, `Form data validation failed: ${err.message}`);
+//   }
+// };
+// const noticeValidation = (req, _, next) => {
+//   console.log(req.toString, "entries");
+//   const { error } = addNoticeJoiSchema.validate(req.body);
+//   if (error) {
+//     error.status = 400;
+//     next(error);
+//     return;
+//   }
+//   next();
+// };
+
+const noticeValidation = (req, _, next) => {
+  upload.any()(req, _, (err) => {
+    if (err) {
+      return next(new RequestError(400, err.message));
     }
-  }
-  req.body = data;
+    next();
+  });
+
+  console.log(req.body); // You can access the data sent through form-data here
+
   const { error } = addNoticeJoiSchema.validate(req.body);
   if (error) {
-    return next(new RequestError(400, error.message));
+    error.status = 400;
+    next(error);
+    return;
   }
   next();
 };
 
-module.exports = noticeValidation;
+module.exports = { noticeValidation };

@@ -73,7 +73,7 @@
         }
       }
     },
-    "/notices/{category}": {
+    "/api/notices/{category}": {
       "get": {
         "tags": ["Notices"],
         "summary": "Get notices by category",
@@ -144,7 +144,7 @@
         }
       }
     },
-    "/notices/{id}": {
+    "/api/notices/{id}": {
       "get": {
         "tags": ["Notices"],
         "summary": "Get notice by ID",
@@ -239,7 +239,7 @@
         }
       }
     },
-    "/notices/{id}/favorite": {
+    "/api/notices/{id}/favorite": {
       "post": {
         "tags": ["Notices"],
         "summary": "Adds the notice with the specified ID to the user's favorites list",
@@ -306,7 +306,7 @@
         }
       }
     },
-    "/notices/favorite": {
+    "/api/notices/favorite": {
       "get": {
         "tags": ["Notices"],
         "summary": "Get favorite notices",
@@ -340,19 +340,19 @@
         }
       }
     },
-    "/notices": {
+    "/api/notices": {
       "get": {
         "tags": ["Notices"],
         "summary": "Get notices created by user",
         "parameters": [
           {
-            "in": "path",
-
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
             "required": true,
             "schema": {
               "type": "string"
-            },
-            "description": "Get notices created by user"
+            }
           }
         ],
         "responses": {
@@ -373,10 +373,15 @@
             "description": "No notices found for given category",
             "content": {}
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
-    "/search/{category}": {
+    "/api/notices/search/{category}": {
       "get": {
         "tags": ["Notices"],
         "summary": "Search notices by category and query",
@@ -385,19 +390,16 @@
             "in": "path",
             "name": "category",
             "required": true,
-            "schema": {
-              "type": "string",
-              "description": "The category to search in"
-            }
+            "type": "string",
+            "description": "one of : sell, lost-found, in-good-hands"
           },
           {
             "in": "query",
             "name": "q",
             "required": true,
-            "schema": {
-              "type": "string",
-              "description": "The search query"
-            }
+
+            "type": "string",
+            "description": "The search query"
           }
         ],
         "responses": {
@@ -585,71 +587,66 @@
       },
 
       "GetNoticeResponse": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "titleOfAdd": {
-              "type": "string",
-              "description": "Title of notice"
-            },
-            "name": {
-              "type": "string",
-              "description": "Pet's name"
-            },
-            "birthday": {
-              "type": "string",
-              "description": "Pet's birthday"
-            },
-            "breed": {
-              "type": "string",
-              "description": "Pet's breed"
-            },
-            "location": {
-              "type": "string",
-              "description": "Pet's location"
-            },
-            "price": {
-              "type": "number",
-              "description": "price for pet"
-            },
-            "sex": {
-              "type": "string",
-              "description": "Pet's sex"
-            },
-            "avatarURL": {
-              "type": "string",
-              "description": "Pet's image url"
-            },
-            "comments": {
-              "type": "string",
-              "description": "comments about pet"
-            },
-            "category": {
-              "type": "string",
-              "description": "Pet's category"
-            }
+        "type": "object",
+        "properties": {
+          "titleOfAdd": {
+            "type": "string",
+            "description": "Title of notice"
+          },
+          "name": {
+            "type": "string",
+            "description": "Pet's name"
+          },
+          "birthday": {
+            "type": "string",
+            "description": "Pet's birthday"
+          },
+          "breed": {
+            "type": "string",
+            "description": "Pet's breed"
+          },
+          "location": {
+            "type": "string",
+            "description": "Pet's location"
+          },
+          "price": {
+            "type": "number",
+            "description": "price for pet"
+          },
+          "sex": {
+            "type": "string",
+            "description": "Pet's sex"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "Pet's image url"
+          },
+          "comments": {
+            "type": "string",
+            "description": "comments about pet"
+          },
+          "category": {
+            "type": "string",
+            "description": "Pet's category"
           }
         },
-        "example": [
-          {
-            "name": "Luna",
-            "birthday": "2019-01-04T22:00:00.000Z",
-            "breed": "Golden Retriever",
-            "location": "Los Angeles",
-            "price": 250,
-            "sex": "female",
-            "avatarURL": "https://images.unsplash.com/photo-1592754862816-1a21a4ea2281?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-            "comments": "Loves to play fetch and swim in the pool. Good with kids and other pets.",
-            "category": "sell",
-            "titleOfAdd": "Looking for good friend"
-          }
-        ]
+        "example": {
+          "name": "Luna",
+          "birthday": "2019-01-04T22:00:00.000Z",
+          "breed": "Golden Retriever",
+          "location": "Los Angeles",
+          "price": 250,
+          "sex": "female",
+          "avatarURL": "https://images.unsplash.com/photo-1592754862816-1a21a4ea2281?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+          "comments": "Loves to play fetch and swim in the pool. Good with kids and other pets.",
+          "category": "sell",
+          "titleOfAdd": "Looking for good friend"
+        }
       },
       "SearchNoticesResponse": {
         "type": "object",
         "properties": {
-          "notices": {
+          "result": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/GetNoticeResponse"

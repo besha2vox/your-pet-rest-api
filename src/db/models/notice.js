@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-
+const moment = require("moment");
 const { handleSchemaValidationError } = require("../../helpers");
 const noticeSchema = Schema(
   {
@@ -13,13 +13,6 @@ const noticeSchema = Schema(
     birthday: {
       type: String,
       required: true,
-      // validate: {
-      //   validator: function (value) {
-      //     return /^([0-2]\d|3[0-1])\.(0\d|1[0-2])\.\d{4}$/.test(value);
-      //   },
-      //   message: (props) =>
-      //     `${props.value} is not a valid birthdate format (DD.MM.YYYY)`,
-      // },
     },
 
     breed: {
@@ -54,7 +47,7 @@ const noticeSchema = Schema(
     category: {
       type: String,
       required: [true, "choose category"],
-      enum: ["sell", "lost-found", "inGoodHands"],
+      enum: ["sell", "lost-found", "in-good-hands"],
     },
     titleOfAdd: {
       type: String,
@@ -76,6 +69,13 @@ const noticeSchema = Schema(
   },
   { versionKey: false, timestamps: true }
 );
+
+noticeSchema.pre("save", function (next) {
+  if (this.birthday) {
+    this.birthday = moment(this.birthday).toDate();
+  }
+  next();
+});
 
 noticeSchema.post("save", handleSchemaValidationError);
 
