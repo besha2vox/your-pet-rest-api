@@ -73,48 +73,7 @@
         }
       }
     },
-<<<<<<< HEAD
-    "/api/news": {
-      "get": {
-        "tags": ["News"],
-        "summary": "News about pets",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "page",
-            "required": false,
-            "type": "string",
-            "description": "Page number for pagination. Default 1."
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "type": "string",
-            "description": "Count of articles per page. Default 6."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetNewsResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error"
-          }
-        }
-      }
-    },
     "/api/notices/{category}": {
-=======
-    "/notices/{category}": {
->>>>>>> e90894883821528d9ddd26ef696a4fb137353722
       "get": {
         "tags": ["Notices"],
         "summary": "Get notices by category",
