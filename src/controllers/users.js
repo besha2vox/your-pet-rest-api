@@ -79,7 +79,24 @@ const login = async (req, res) => {
   }
 };
 
+const getCurrent = async (req, res) => {
+  const { username, email } = req.user;
+  res.json({
+    username,
+    email,
+  });
+};
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(_id, { token: "" });
+
+  res.status(204).json();
+};
+
 module.exports = {
   register: controllerWrap(register),
   login: controllerWrap(login),
+  getCurrent: controllerWrap(getCurrent),
+  logout: controllerWrap(logout),
 };
