@@ -24,12 +24,9 @@ const getByCategory = async (req, res) => {
   });
 
   res.status(201).json({
-    status: "success",
-    code: 200,
-    data: {
-      result: notices,
-      totalResults: totalCount,
-    },
+    result: notices,
+    hits: notices.length,
+    totalHits: totalCount,
   });
 };
 

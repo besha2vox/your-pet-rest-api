@@ -24,11 +24,7 @@ const addNotice = async (req, res) => {
     throw new RequestError(400, `error: notice is not created`);
   }
   res.status(201).json({
-    status: "success",
-    code: 201,
-    data: {
-      result: notice,
-    },
+    result: notice,
   });
 };
 

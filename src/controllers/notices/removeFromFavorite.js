@@ -28,11 +28,7 @@ const removeFromFavorite = async (req, res) => {
   );
 
   res.json({
-    status: "success",
-    code: 200,
-    data: {
-      result: { updatedUser, updatedNotice },
-    },
+    result: { updatedUser, updatedNotice },
   });
 };
 

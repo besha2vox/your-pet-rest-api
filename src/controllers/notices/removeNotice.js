@@ -26,11 +26,7 @@ const removeNotice = async (req, res) => {
   }
 
   res.status(204).json({
-    status: "success",
-    code: 204,
-    data: {
-      result: removedNotice,
-    },
+    result: removedNotice,
   });
 };
 
