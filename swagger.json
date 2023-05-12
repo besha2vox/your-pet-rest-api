@@ -377,7 +377,17 @@
       "get": {
         "tags": ["Notices"],
         "summary": "Get notices created by user",
-
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -396,7 +406,12 @@
             "description": "No notices found for given category",
             "content": {}
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/api/notices/search/{category}": {
