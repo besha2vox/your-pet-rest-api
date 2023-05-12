@@ -29,13 +29,9 @@ const addToFavorite = async (req, res) => {
   ).populate("favorite", "_id");
 
   res.json({
-    status: "success",
-    code: 201,
-    data: {
-      result: {
-        updatedUser,
-        updatedNotice,
-      },
+    result: {
+      updatedUser,
+      updatedNotice,
     },
   });
 };

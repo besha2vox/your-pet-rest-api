@@ -82,23 +82,20 @@
             "in": "path",
             "name": "category",
             "required": true,
-            "schema": {
-              "type": "string",
-              "example": "sell"
-            },
-            "description": "Category to filter notices by category"
+
+            "type": "string",
+
+            "description": "one of: sell, lost-found, in-good-hands"
           }
         ],
+
         "responses": {
           "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GetNoticeResponse"
-                  }
+                  "$ref": "#/components/schemas/GetNoticeResponse"
                 }
               }
             }
@@ -248,10 +245,8 @@
             "in": "path",
             "name": "id",
             "required": true,
-            "schema": {
-              "type": "string",
-              "description": "adds notice to favorites"
-            }
+
+            "type": "string"
           }
         ],
         "responses": {

@@ -9,11 +9,7 @@ const getNoticeById = async (req, res) => {
     throw new RequestError(404, `Notice with id: ${id} is not found`);
   }
   res.json({
-    status: "success",
-    code: 200,
-    data: {
-      result: notice,
-    },
+    result: notice,
   });
 };
 

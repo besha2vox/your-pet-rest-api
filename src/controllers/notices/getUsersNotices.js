@@ -22,11 +22,7 @@ const getUsersNotices = async (req, res) => {
   }
 
   res.status(201).json({
-    status: "success",
-    code: 200,
-    data: {
-      result: notices,
-    },
+    result: notices,
   });
 };
 

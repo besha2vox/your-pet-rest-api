@@ -24,12 +24,9 @@ const getFavoriteNotices = async (req, res) => {
   });
 
   res.status(200).json({
-    status: "success",
-    code: 200,
-    data: {
-      result: notices,
-      totalResults: totalCount,
-    },
+    result: notices,
+    hits: notices.length,
+    totalHits: totalCount,
   });
 };
 
