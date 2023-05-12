@@ -19,13 +19,14 @@ const getFavoriteNotices = async (req, res) => {
     .skip(skip)
     .limit(limit)
     .populate("owner", "name email phone");
+  const totalCount = await Notice.countDocuments({
+    _id: { $in: user.favorite },
+  });
 
   res.status(200).json({
-    status: "success",
-    code: 200,
-    data: {
-      result: notices,
-    },
+    result: notices,
+    hits: notices.length,
+    totalHits: totalCount,
   });
 };
 

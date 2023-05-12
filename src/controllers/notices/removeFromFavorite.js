@@ -1,11 +1,12 @@
-const { User } = require("../../db/models");
+const { User, Notice } = require("../../db/models");
 
 const { RequestError } = require("../../helpers");
 const { ctrlWrapper } = require("../../middlewares");
 
 const removeFromFavorite = async (req, res) => {
-  const { _id: userId } = req.user;
+  // const { _id: userId } = req.user;
   const { id: noticeId } = req.params;
+  const userId = "645d2f7a502bb608851a31f4";
 
   const user = await User.findById(userId);
   if (!user) {
@@ -17,13 +18,17 @@ const removeFromFavorite = async (req, res) => {
     userId,
     { $pull: { favorite: noticeId } },
     { new: true }
-  ).populate("favorite");
+  );
+  // .populate("favorite");
+
+  const updatedNotice = await Notice.findByIdAndUpdate(
+    noticeId,
+    { $pull: { favorite: userId } },
+    { new: true }
+  );
+
   res.json({
-    status: "success",
-    code: 200,
-    data: {
-      result: updatedUser,
-    },
+    result: { updatedUser, updatedNotice },
   });
 };
 

@@ -11,7 +11,7 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  folder: "avatars",
+  folder: "pets-photo",
   allowedFormats: ["jpg", "png"],
   filename: (req, file, cb) => {
     cb(null, file.originalname);

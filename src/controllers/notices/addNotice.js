@@ -2,11 +2,10 @@ const { Notice } = require("../../db/models");
 const { RequestError } = require("../../helpers");
 const { ctrlWrapper } = require("../../middlewares");
 
-// const imagesDir = path.join(__dirname, "../../", "public", "pets-photo");
-
 const addNotice = async (req, res) => {
-  const { _id: owner } = req.user;
-  const { category } = req.query;
+  // const { _id: owner } = req.user;
+  const owner = "645d2f7a502bb608851a31f4";
+  const { category } = req.params;
   if (!req.body) {
     throw new RequestError(400, `there is no body content`);
   }
@@ -18,18 +17,14 @@ const addNotice = async (req, res) => {
 
   const data = req.file
     ? { owner, ...noticeData, category, avatarURL: req.file.path }
-    : { owner, ...noticeData, category, avatarURL: null };
+    : { owner, ...noticeData, category };
 
   const notice = await Notice.create(data);
   if (!notice) {
     throw new RequestError(400, `error: notice is not created`);
   }
   res.status(201).json({
-    status: "success",
-    code: 201,
-    data: {
-      result: notice,
-    },
+    result: notice,
   });
 };
 

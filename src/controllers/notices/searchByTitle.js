@@ -10,26 +10,42 @@ const searchByTitle = async (req, res) => {
 
   const searchWords = q.trim().split(" ");
 
+  const regexExpressions = searchWords.map((word) => ({
+    titleOfAdd: { $regex: new RegExp(word, "i") },
+  }));
+
   const notices = await Notice.find(
     {
-      $and: [{ category }, { titleOfAdd: { $in: searchWords } }],
+      $and: [
+        { category },
+        {
+          $or: regexExpressions,
+        },
+      ],
     },
     "-createdAt -updatedAt",
     {
       skip,
       limit: Number(limit),
     }
-  );
+  ).sort({ createdAt: -1 });
+
   if (!notices || notices.length === 0) {
     throw new RequestError(404, `no match for your search`);
   }
+  const totalHits = await Notice.countDocuments({
+    $and: [
+      { category },
+      {
+        $or: regexExpressions,
+      },
+    ],
+  });
 
   res.status(200).json({
-    status: "success",
-    code: 200,
-    data: {
-      result: notices,
-    },
+    result: notices,
+    hits: notices.length,
+    totalHits: totalHits,
   });
 };
 
