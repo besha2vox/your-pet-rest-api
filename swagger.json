@@ -12,8 +12,8 @@
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json"],
   "servers": [
-    { "url": "http://localhost:3000" },
-    { "url": "https://your-pet-by-it-kotiki.onrender.com" }
+    { "url": "https://your-pet-by-it-kotiki.onrender.com" },
+    { "url": "http://localhost:3000" }
   ],
   "tags": [
     {
@@ -450,6 +450,54 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/news/search": {
+      "get": {
+        "tags": ["News"],
+        "summary": "Find news by key words",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "string",
+            "description": "Page number for pagination. Default 1."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "string",
+            "description": "Count of articles per page. Default 6."
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "required": true,
+            "type": "string",
+            "description": "Query string",
+            "example": "dog"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNewsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No match for your search"
           },
           "500": {
             "description": "Server error"
