@@ -26,13 +26,18 @@ const addToFavorite = async (req, res) => {
     });
   }
 
-  await User.findByIdAndUpdate(
+  const updatedUser = await User.findByIdAndUpdate(
     userId,
     { $push: { favorite: noticeId } },
     { new: true }
+  ).populate(
+    "favorite",
+    "titleOfAdd avatarURL category name birthday breed location price sex comments"
   );
 
-  const updatedNotice = await Notice.findByIdAndUpdate(
+  updatedUser.password = undefined;
+
+  await Notice.findByIdAndUpdate(
     noticeId,
     { $push: { favorite: userId } },
     { new: true }
@@ -40,7 +45,7 @@ const addToFavorite = async (req, res) => {
 
   res.json({
     result: {
-      updatedNotice,
+      updatedUser,
     },
   });
 };

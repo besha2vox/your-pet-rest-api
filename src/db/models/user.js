@@ -25,10 +25,7 @@ const userSchema = new Schema(
       type: String,
       default: "",
     },
-    favorite: {
-      type: Array,
-      default: [],
-    },
+    favorite: [{ type: Schema.Types.ObjectId, ref: "notice" }],
   },
   {
     versionKey: false,
