@@ -26,6 +26,9 @@ const userSchema = new Schema(
       type: String,
       default: "",
     },
+    birthday: {
+      type: String,
+    },
 
     phone: {
       type: String,
@@ -78,17 +81,20 @@ const schemas = {
   }),
   // Update user schema
   updateUserSchema: Joi.object({
-    birthday: Joi.date().required().messages({
-      "any.required": "Set your birthday",
-      "date.base": "Invalid date format",
-    }),
+    birthday: Joi.string()
+      .pattern(/^([0-2]\d|3[0-1])\.(0\d|1[0-2])\.\d{4}$/)
+      .required()
+      .messages({
+        "any.required": "Set your birthday",
+        "date.base": "Invalid date format",
+      }),
     city: Joi.string()
       .pattern(/^[a-zA-Z]+$/)
       .messages({
         "any.required": "Set your city",
       }),
-    mobilePhone: Joi.string().pattern(mobileRegex).required().messages({
-      "any.required": "Set your mobile phone number",
+    phone: Joi.string().pattern(mobileRegex).required().messages({
+      "any.required": "Set your phone number",
     }),
   }),
 

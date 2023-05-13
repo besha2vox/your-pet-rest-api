@@ -24,7 +24,7 @@ router.get("/verify/:verificationToken", ctrl.verify);
 router.post("/verify", validation(schemas.emailSchema), ctrl.resendVerifyEmail);
 
 // Update User
-router.patch("/users", auth, validation(schemas.updateUserSchema), ctrl.updateUser);
+router.put("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUser);
 
 // Update avatar
 router.patch("/avatars", auth, uploadUserAvatar.single("avatar"), ctrl.updateAvatar);

@@ -17,8 +17,7 @@ const petSchema = Schema(
         validator: function (value) {
           return /^([0-2]\d|3[0-1])\.(0\d|1[0-2])\.\d{4}$/.test(value);
         },
-        message: (props) =>
-          `${props.value} is not a valid birthdate format (DD.MM.YYYY)`,
+        message: (props) => `${props.value} is not a valid birthdate format (DD.MM.YYYY)`,
       },
     },
 
