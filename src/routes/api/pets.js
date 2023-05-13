@@ -1,8 +1,25 @@
 const express = require("express");
-
-// Закоментував тому, що поки змінна ніде не використана - eslint видає помилку
-// const { pets: ctrl } = require("../../controllers");
-
 const router = express.Router();
+
+const { pets: ctrl } = require("../../controllers");
+const { 
+    validation, 
+    isValidId,
+    //  auth,  
+    uploadCloud, 
+} = require("../../middlewares");
+const { addPetJoiSchema }  = require("../../db/models/pets"); 
+
+router.post("/", 
+// auth, 
+uploadCloud.single("image"), 
+validation(addPetJoiSchema), 
+ctrl.addPet);
+
+
+router.delete("/:id", 
+// auth,  
+isValidId, 
+ctrl.deletePetId);
 
 module.exports = router;
