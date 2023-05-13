@@ -56,7 +56,8 @@ const userSchema = new Schema(
       type: [],
     },
     pets: {
-      type: [],
+      type: Schema.Types.ObjectId,
+      ref: "pet",
     },
   },
   {
@@ -79,8 +80,7 @@ const schemas = {
     password: Joi.string().min(8).required(),
   }),
   // Update user schema
-  updateSchema: Joi.object({
-    username: Joi.string().required(),
+  updateUserSchema: Joi.object({
     birthday: Joi.date().required().messages({
       "any.required": "Set your birthday",
       "date.base": "Invalid date format",
