@@ -29,11 +29,9 @@ const userSchema = new Schema(
 
     phone: {
       type: String,
-      required: [true, "Set your mobile phone"],
     },
     city: {
       type: String,
-      required: [true, "Set your city"],
       match: /^[a-zA-Z]+$/,
     },
     verify: {
@@ -46,7 +44,6 @@ const userSchema = new Schema(
     },
     avatarURL: {
       type: String,
-      required: true,
     },
     firstVisit: {
       type: Boolean,
