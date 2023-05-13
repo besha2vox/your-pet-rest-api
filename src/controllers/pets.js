@@ -2,8 +2,11 @@ const { Pet } = require("../db/models");
 const { RequestError } = require("../helpers");
 const { ctrlWrapper } = require("../middlewares");
 
+
 async function addPet(req, res) {
-    // const{_id: owner} = req.user;
+    console.log("File uploaded to: ", req.file.path); 
+
+    const{_id: owner} = req.user;
 
     if (!req.body) {
     throw new RequestError(400, `The text fields are not filled in`);
@@ -11,11 +14,11 @@ async function addPet(req, res) {
     if (!req.file) {
     throw new RequestError(400, `The file is not loaded`);
     }
-    
+
     const result = await Pet.create({
         ...req.body, 
         avatarURL: req.file.path,
-        // owner
+        owner
     });
     res.status(201).json(result);
 }
@@ -25,8 +28,7 @@ async function deletePetId(req, res) {
 
     const result = await Pet.findByIdAndDelete(id);
     if(!result) {
-        console.log(`Pet with id ${id} not found`);
-    throw RequestError(404, `Not found`);
+        throw new RequestError(404, `Pet with id ${id} not found`);
     }
     res.status(200).json(
     {
