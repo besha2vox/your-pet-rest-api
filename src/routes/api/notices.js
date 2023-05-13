@@ -10,44 +10,28 @@ const {
 
 // const { noticeValidation } = require("../../middlewares");
 const { notices: ctrl } = require("../../controllers");
-
+router.get("/", auth, ctrl.getUsersNotices);
+router.get("/favorites", auth, ctrl.getFavoriteNotices);
+router.post("/favorite/:id", auth, ctrl.addToFavorite);
+router.delete("/favorite/:id", auth, ctrl.removeFromFavorite);
 router.get("/:category", ctrl.getByCategory);
-router.get("/:id", ctrl.getNoticeById);
-router.post(
-  "/:id/favorite",
-  // auth,
-  ctrl.addToFavorite
-);
-router.get("/favorite", auth, ctrl.getFavoriteNotices);
-router.delete(
-  "/:id/favorite",
-  // auth,
-  ctrl.removeFromFavorite
-);
+router.get("/notice/:id", ctrl.getNoticeById);
+
 router.post(
   "/:category",
-  // auth,
+  auth,
 
   // noticeValidation,
   uploadCloud.single("pets-photo"),
   ctrl.addNotice
 );
-router.get(
-  "/",
-  // auth,
-  ctrl.getUsersNotices
-);
-router.delete(
-  "/:id",
-  // auth,
-  ctrl.removeNotice
-);
+router.delete("/notice/:id", auth, ctrl.removeNotice);
 router.get("/search/:category", ctrl.searchByTitle);
 
-router.put(
-  "/:id",
-  // auth, noticeValidation,
-  ctrl.updateNotice
-);
+// router.patch(
+//   "/:id",
+//   // auth, noticeValidation,
+//   ctrl.updateNotice
+// );
 
 module.exports = router;

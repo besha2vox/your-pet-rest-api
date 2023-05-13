@@ -7,7 +7,7 @@ const { getUsersNotices } = require("./getUsersNotices");
 const { removeFromFavorite } = require("./removeFromFavorite");
 const { removeNotice } = require("./removeNotice");
 const { searchByTitle } = require("./searchByTitle");
-const { updateNotice } = require("./updateNotice");
+// const { updateNotice } = require("./updateNotice");
 
 module.exports = {
   addNotice,
@@ -19,5 +19,5 @@ module.exports = {
   removeFromFavorite,
   removeNotice,
   searchByTitle,
-  updateNotice,
+  // updateNotice,
 };
