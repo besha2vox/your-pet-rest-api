@@ -12,7 +12,6 @@ const removeFromFavorite = async (req, res) => {
     throw new RequestError(404, `User with id: ${userId} not found`);
   }
 
-  // Remove noticeId from the favorite array field in User model
   const updatedUser = await User.findByIdAndUpdate(
     userId,
     { $pull: { favorite: { $eq: noticeId } } },

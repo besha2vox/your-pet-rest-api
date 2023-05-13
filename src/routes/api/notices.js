@@ -28,10 +28,12 @@ router.post(
 router.delete("/notice/:id", auth, ctrl.removeNotice);
 router.get("/search/:category", ctrl.searchByTitle);
 
-// router.patch(
-//   "/:id",
-//   // auth, noticeValidation,
-//   ctrl.updateNotice
-// );
+router.put(
+  "/notice/:id",
+  auth,
+  // noticeValidation,
+  uploadCloud.single("pets-photo"),
+  ctrl.updateNotice
+);
 
 module.exports = router;

@@ -2,7 +2,6 @@ const { Notice, User } = require("../../db/models");
 const { RequestError } = require("../../helpers");
 const { ctrlWrapper } = require("../../middlewares");
 
-// not ready art all
 const getFavoriteNotices = async (req, res) => {
   const { _id: ownerId } = req.user;
 

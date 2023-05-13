@@ -248,6 +248,15 @@
         "summary": "Delete notice by ID",
         "parameters": [
           {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "in": "path",
             "name": "id",
             "required": true,
@@ -269,7 +278,7 @@
           }
         }
       },
-      "patch": {
+      "put": {
         "tags": ["Notices"],
         "summary": "Updates notice",
         "parameters": [
@@ -310,6 +319,15 @@
         "summary": "Adds the notice with the specified ID to the user's favorites list",
         "parameters": [
           {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "in": "path",
             "name": "id",
             "required": true,
@@ -334,12 +352,26 @@
               "description": "Server error"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       },
       "delete": {
         "tags": ["Notices"],
         "summary": "Removes the notice with the specified ID from the user's favorites list",
         "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "in": "path",
             "name": "id",
@@ -366,20 +398,27 @@
           "500": {
             "description": "Server error"
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
-    "/api/notices/favorite": {
+    "/api/notices/favorites": {
       "get": {
         "tags": ["Notices"],
         "summary": "Get favorite notices",
         "parameters": [
           {
-            "in": "path",
-
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
             "required": true,
-
-            "description": "Category to filter favorite notices"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
