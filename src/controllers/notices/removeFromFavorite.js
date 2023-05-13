@@ -13,21 +13,24 @@ const removeFromFavorite = async (req, res) => {
   }
 
   // Remove noticeId from the favorite array field in User model
-  await User.findByIdAndUpdate(
+  const updatedUser = await User.findByIdAndUpdate(
     userId,
     { $pull: { favorite: { $eq: noticeId } } },
     { new: true }
+  ).populate(
+    "favorite",
+    "titleOfAdd avatarURL category name birthday breed location price sex comments"
   );
-  // .populate("favorite");
 
-  const updatedNotice = await Notice.findByIdAndUpdate(
+  updatedUser.password = undefined;
+  await Notice.findByIdAndUpdate(
     noticeId,
     { $pull: { favorite: { $eq: userId } } },
     { new: true }
   );
 
   res.json({
-    result: { updatedNotice },
+    result: { updatedUser },
   });
 };
 
