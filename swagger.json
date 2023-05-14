@@ -665,11 +665,6 @@
                     "format": "binary",
                     "description": "pet's avatar"
                   },
-                  "category": {
-                    "type": "string",
-                    "description": "category of announcements",
-                    "required": true
-                  },
                   "name": {
                     "type": "string",
                     "description": "Pet's name",
@@ -1072,10 +1067,6 @@
             "type": "string",
             "description": "comments about pet"
           },
-          "category": {
-            "type": "string",
-            "description": "Category of announcements"
-          },
           "owner": {
             "type": "string",
             "description": "pet's owner"
@@ -1088,7 +1079,6 @@
         "example": {
           "name": "Derek",
           "birthday": "2019-04-03T21:00:00.000Z",
-          "category": "your pet",
           "breed": "domestic cat",
           "comments": "my lovely cat",
           "owner": "645f88639994886006f9a291",
