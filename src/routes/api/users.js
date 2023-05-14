@@ -20,14 +20,8 @@ router.post("/logout", auth, ctrl.logout);
 // Verification
 router.get("/verify/:verificationToken", ctrl.verify);
 
-// Resend verification
-// router.post("/verify", validation(schemas.emailSchema), ctrl.resendVerifyEmail);
-
 // Update User
 router.put("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUser);
-
-// Update avatar
-// router.patch("/avatars", auth, uploadUserAvatar.single("avatar"), ctrl.updateAvatar);
 
 // Get info about user and user's pets
 router.get("/:id", auth, ctrl.getUserInfo);
@@ -36,3 +30,9 @@ router.get("/:id", auth, ctrl.getUserInfo);
 router.patch("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUserInfo);
 
 module.exports = router;
+
+// Resend verification
+// router.post("/verify", validation(schemas.emailSchema), ctrl.resendVerifyEmail);
+
+// Update avatar
+// router.patch("/avatars", auth, uploadUserAvatar.single("avatar"), ctrl.updateAvatar);

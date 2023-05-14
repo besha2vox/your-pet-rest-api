@@ -5,6 +5,7 @@ const { RequestError } = require("../helpers");
 const { controllerWrap } = require("../utils/validation");
 const { v4: uuidv4 } = require("uuid");
 const gravatar = require("gravatar");
+
 // const fs = require("fs/promises");
 // const path = require("path");
 // const { sendEmail } = require("../helpers");
@@ -29,7 +30,7 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-  const avatarURL = gravatar.url(email);
+  // const avatarURL = gravatar.url(email);
   const verificationToken = uuidv4();
   try {
     const result = await User.create({
@@ -128,24 +129,6 @@ const verify = async (req, res) => {
   res.status(200).json({ message: "Verification successful" });
 };
 
-// const resendVerifyEmail = async (req, res) => {
-//   const { email } = req.body;
-//   const user = await User.findOne({ email });
-//   if (!user) {
-//     throw RequestError(404, "User not found");
-//   }
-
-//   // const verifyEmail = {
-//   //   to: email,
-//   //   subject: "Сonfirmation of registration",
-//   //   html: `<a target="_blank" href="http://localhost:3001/api/users/verify/${user.verificationToken}">Click to confirm registration</a>`,
-//   // };
-
-//   // await sendEmail(verifyEmail);
-
-//   res.status(200).json({ message: "Verification email sent" });
-// };
-
 const updateUser = async (req, res) => {
   const { _id } = req.user;
   const data = req.body;
@@ -155,24 +138,6 @@ const updateUser = async (req, res) => {
   }
   res.status(200).json(updatedData);
 };
-
-// const updateAvatar = async (req, res) => {
-//   const { _id } = req.user;
-//   const { path: tmpUpload, filename } = req.file;
-
-//   await resizeImg(tmpUpload, 250, 250);
-
-//   const avatarName = `${_id}_${filename}`;
-//   const resultUpload = path.join(avatarDir, avatarName);
-
-//   await fs.rename(tmpUpload, resultUpload);
-
-//   const avatarURL = path.join("avatars", avatarName);
-
-//   await User.findByIdAndUpdate(_id, { avatarURL });
-
-//   res.status(200).json({ avatarURL });
-// };
 
 const getUserInfo = async (req, res) => {
   const { _id } = req.user;
@@ -212,6 +177,40 @@ module.exports = {
   updateUser: controllerWrap(updateUser),
   getUserInfo: controllerWrap(getUserInfo),
   updateUserInfo: controllerWrap(updateUserInfo),
-  // updateAvatar: controllerWrap(updateAvatar),
-  // resendVerifyEmail: controllerWrap(resendVerifyEmail),
 };
+
+// const updateAvatar = async (req, res) => {
+//   const { _id } = req.user;
+//   const { path: tmpUpload, filename } = req.file;
+
+//   await resizeImg(tmpUpload, 250, 250);
+
+//   const avatarName = `${_id}_${filename}`;
+//   const resultUpload = path.join(avatarDir, avatarName);
+
+//   await fs.rename(tmpUpload, resultUpload);
+
+//   const avatarURL = path.join("avatars", avatarName);
+
+//   await User.findByIdAndUpdate(_id, { avatarURL });
+
+//   res.status(200).json({ avatarURL });
+// };
+
+// const resendVerifyEmail = async (req, res) => {
+//   const { email } = req.body;
+//   const user = await User.findOne({ email });
+//   if (!user) {
+//     throw RequestError(404, "User not found");
+//   }
+
+//   // const verifyEmail = {
+//   //   to: email,
+//   //   subject: "Сonfirmation of registration",
+//   //   html: `<a target="_blank" href="http://localhost:3001/api/users/verify/${user.verificationToken}">Click to confirm registration</a>`,
+//   // };
+
+//   // await sendEmail(verifyEmail);
+
+//   res.status(200).json({ message: "Verification email sent" });
+// };
