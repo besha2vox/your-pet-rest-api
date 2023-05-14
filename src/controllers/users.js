@@ -180,7 +180,7 @@ module.exports = {
   getCurrent: controllerWrap(getCurrent),
   logout: controllerWrap(logout),
   verify: controllerWrap(verify),
-  resendVerifyEmail: controllerWrap(resendVerifyEmail),
+  // resendVerifyEmail: controllerWrap(resendVerifyEmail),
   updateUser: controllerWrap(updateUser),
   updateAvatar: controllerWrap(updateAvatar),
 };
