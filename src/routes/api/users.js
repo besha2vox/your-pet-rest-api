@@ -21,12 +21,18 @@ router.post("/logout", auth, ctrl.logout);
 router.get("/verify/:verificationToken", ctrl.verify);
 
 // Resend verification
-router.post("/verify", validation(schemas.emailSchema), ctrl.resendVerifyEmail);
+// router.post("/verify", validation(schemas.emailSchema), ctrl.resendVerifyEmail);
 
 // Update User
 router.put("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUser);
 
 // Update avatar
-router.patch("/avatars", auth, uploadUserAvatar.single("avatar"), ctrl.updateAvatar);
+// router.patch("/avatars", auth, uploadUserAvatar.single("avatar"), ctrl.updateAvatar);
+
+// Get info about user and user's pets
+router.get("/:id", auth, ctrl.getUserInfo);
+
+// Update info about user and user's pets
+router.patch("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUserInfo);
 
 module.exports = router;

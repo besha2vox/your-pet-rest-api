@@ -55,7 +55,7 @@ const userSchema = new Schema(
     favorite: {
       type: [],
     },
-    pets: {
+    pet: {
       type: Schema.Types.ObjectId,
       ref: "pet",
     },

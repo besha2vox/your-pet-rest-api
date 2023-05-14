@@ -1,17 +1,17 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require("../db/models");
-const { RequestError, resizeImg } = require("../helpers");
+const { RequestError } = require("../helpers");
 const { controllerWrap } = require("../utils/validation");
 const { v4: uuidv4 } = require("uuid");
 const gravatar = require("gravatar");
-const fs = require("fs/promises");
-const path = require("path");
+// const fs = require("fs/promises");
+// const path = require("path");
 // const { sendEmail } = require("../helpers");
 
 const { SECRET_KEY } = process.env;
 
-const avatarDir = path.join(__dirname, "../", "public", "avatars");
+// const avatarDir = path.join(__dirname, "../", "public", "avatars");
 
 const generateToken = (id) => {
   const payload = {
@@ -128,23 +128,23 @@ const verify = async (req, res) => {
   res.status(200).json({ message: "Verification successful" });
 };
 
-const resendVerifyEmail = async (req, res) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw RequestError(404, "User not found");
-  }
+// const resendVerifyEmail = async (req, res) => {
+//   const { email } = req.body;
+//   const user = await User.findOne({ email });
+//   if (!user) {
+//     throw RequestError(404, "User not found");
+//   }
 
-  // const verifyEmail = {
-  //   to: email,
-  //   subject: "Сonfirmation of registration",
-  //   html: `<a target="_blank" href="http://localhost:3001/api/users/verify/${user.verificationToken}">Click to confirm registration</a>`,
-  // };
+//   // const verifyEmail = {
+//   //   to: email,
+//   //   subject: "Сonfirmation of registration",
+//   //   html: `<a target="_blank" href="http://localhost:3001/api/users/verify/${user.verificationToken}">Click to confirm registration</a>`,
+//   // };
 
-  // await sendEmail(verifyEmail);
+//   // await sendEmail(verifyEmail);
 
-  res.status(200).json({ message: "Verification email sent" });
-};
+//   res.status(200).json({ message: "Verification email sent" });
+// };
 
 const updateUser = async (req, res) => {
   const { _id } = req.user;
@@ -156,22 +156,51 @@ const updateUser = async (req, res) => {
   res.status(200).json(updatedData);
 };
 
-const updateAvatar = async (req, res) => {
+// const updateAvatar = async (req, res) => {
+//   const { _id } = req.user;
+//   const { path: tmpUpload, filename } = req.file;
+
+//   await resizeImg(tmpUpload, 250, 250);
+
+//   const avatarName = `${_id}_${filename}`;
+//   const resultUpload = path.join(avatarDir, avatarName);
+
+//   await fs.rename(tmpUpload, resultUpload);
+
+//   const avatarURL = path.join("avatars", avatarName);
+
+//   await User.findByIdAndUpdate(_id, { avatarURL });
+
+//   res.status(200).json({ avatarURL });
+// };
+
+const getUserInfo = async (req, res) => {
   const { _id } = req.user;
-  const { path: tmpUpload, filename } = req.file;
+  const userInfo = await User.findById(_id).populate("pet");
+  if (!userInfo) {
+    throw RequestError(401, "Not authorized");
+  }
+  res.status(200).json({
+    user: {
+      username: userInfo.username,
+      email: userInfo.email,
+      phone: userInfo.phone,
+      city: userInfo.city,
+      birthday: userInfo.birthday,
+      favorite: userInfo.favorite,
+      pet: userInfo.pet,
+    },
+  });
+};
 
-  await resizeImg(tmpUpload, 250, 250);
-
-  const avatarName = `${_id}_${filename}`;
-  const resultUpload = path.join(avatarDir, avatarName);
-
-  await fs.rename(tmpUpload, resultUpload);
-
-  const avatarURL = path.join("avatars", avatarName);
-
-  await User.findByIdAndUpdate(_id, { avatarURL });
-
-  res.status(200).json({ avatarURL });
+const updateUserInfo = async (req, res) => {
+  const { _id } = req.user;
+  const data = req.body;
+  const updatedData = await User.findByIdAndUpdate(_id, data).populate("pet");
+  if (!updatedData) {
+    throw RequestError(401, "Not authorized");
+  }
+  res.status(200).json(updatedData);
 };
 
 module.exports = {
@@ -180,7 +209,9 @@ module.exports = {
   getCurrent: controllerWrap(getCurrent),
   logout: controllerWrap(logout),
   verify: controllerWrap(verify),
-  // resendVerifyEmail: controllerWrap(resendVerifyEmail),
   updateUser: controllerWrap(updateUser),
-  updateAvatar: controllerWrap(updateAvatar),
+  getUserInfo: controllerWrap(getUserInfo),
+  updateUserInfo: controllerWrap(updateUserInfo),
+  // updateAvatar: controllerWrap(updateAvatar),
+  // resendVerifyEmail: controllerWrap(resendVerifyEmail),
 };
