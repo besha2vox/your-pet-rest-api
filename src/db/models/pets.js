@@ -27,11 +27,6 @@ const petSchema = Schema(
         message: 'Invalid birthdate format (must be dd.mm.yyyy)',
       },
     },
-    category: {
-      type: String,
-      enum: ["sell", "lost-found", "inGoodHands", "your pet"],
-      required: [true, "Choose one of the categories"],
-    },
     breed: {
       type: String,
       required: [true, "Set the breed"],
@@ -86,10 +81,6 @@ const addPetJoiSchema = Joi.object({
       'any.required': 'Set birthday for pet',
       'string.pattern.base': 'Invalid date format',
       'string.dateInvalid': 'Invalid date',
-  }),
-  category: Joi.string().valid('sell', 'lost-found', 'inGoodHands', 'your pet').required().messages({
-    'any.required': 'Choose one of the categories',
-    'any.only': 'Choose one of the categories',
   }),
   breed: Joi.string()
     .min(2)
