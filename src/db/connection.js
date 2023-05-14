@@ -1,7 +1,9 @@
+require('dotenv').config();
 const mongoose = require("mongoose");
-// require('dotenv').config();
 
 const { DB_HOST } = process.env;
+
+console.log(DB_HOST);
 
 const connectionDB = async () => {
   mongoose.connect(DB_HOST, {
@@ -9,5 +11,6 @@ const connectionDB = async () => {
     useUnifiedTopology: true,
   });
 };
+
 
 module.exports = connectionDB;

@@ -1,4 +1,4 @@
-{
+{ 
   "openapi": "3.0.1",
   "info": {
     "version": "0.0.1",
@@ -23,6 +23,10 @@
     {
       "name": "Notices",
       "description": "Endpoints for notices managing"
+    },
+    {
+      "name": "Pets",
+      "description": "Endpoints for user's pets"
     },
     {
       "name": "News",
@@ -645,6 +649,135 @@
           }
         }
       }
+    },
+    "/api/pets": {
+      "post": {
+        "tags": ["Pets"],
+        "summary": "Add user's pet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pets",
+            "required": true,
+            "type": "string",
+            "description": "Add user's pet"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pets-photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "pet's avatar"
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "category of announcements",
+                    "required": true
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Pet's name",
+                    "required": true
+                  },
+                  "birthday": {
+                    "type": "date",
+                    "description": "Pet's birthday",
+                    "required": true
+                  },
+                  "breed": {
+                    "type": "string",
+                    "description": "Pet's breed",
+                    "required": true
+                  },
+                  "comments": {
+                    "type": "string",
+                    "description": "Comments about pet"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Information about the pet was published",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostPetsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400, `The file is not loaded/The text fields are not filled in"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/pets/:id":  {
+      "delete": {
+        "tags": ["Pets"],
+        "summary": "Delete the pet by id",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Delete the pet by id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The pet was deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletePetByIdResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pet with id ${id} not found"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -936,6 +1069,53 @@
             "email": "press@citynet.kharkov.ua"
           }
         ]
+      },
+      "PostPetsResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Pet's name"
+          },
+          "birthday": {
+            "type": "string",
+            "description": "Pet's birthday"
+          },
+          "breed": {
+            "type": "string",
+            "description": "Pet's breed"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "Pet's image url"
+          },
+          "comments": {
+            "type": "string",
+            "description": "comments about pet"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of announcements"
+          },
+          "owner": {
+            "type": "string",
+            "description": "pet's owner"
+          },
+          "_id": {
+            "type": "string",
+            "description": "pet's id"
+          }
+        },
+        "example": {
+          "name": "Derek",
+          "birthday": "2019-04-03T21:00:00.000Z",
+          "category": "your pet",
+          "breed": "domestic cat",
+          "comments": "my lovely cat",
+          "owner": "645f88639994886006f9a291",
+          "avatarURL": "https://res.cloudinary.com/dgei1ulzc/image/upload/v1684017393/ryt2sd2jixhzisfzubvv.jpg",
+          "_id": "646010f2da84cd379a718d04"
+        }
       }
     },
     "securitySchemes": {
