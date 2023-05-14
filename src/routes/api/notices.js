@@ -1,5 +1,4 @@
 const express = require("express");
-
 const router = express.Router();
 
 const {
@@ -20,9 +19,8 @@ router.get("/notice/:id", ctrl.getNoticeById);
 router.post(
   "/:category",
   auth,
-
-  // noticeValidation,
   uploadCloud.single("pets-photo"),
+  // noticeValidation,
   ctrl.addNotice
 );
 router.delete("/notice/:id", auth, ctrl.removeNotice);

@@ -1,4 +1,4 @@
-{ 
+{
   "openapi": "3.0.1",
   "info": {
     "version": "0.0.1",
@@ -10,7 +10,7 @@
     }
   },
   "consumes": ["application/json", "multipart/form-data"],
-  "produces": ["application/json"],
+  "produces": ["application/json", "multipart/form-data"],
   "servers": [
     { "url": "https://your-pet-by-it-kotiki.onrender.com" },
     { "url": "http://localhost:3000" }
@@ -112,29 +112,23 @@
       },
       "post": {
         "tags": ["Notices"],
-        "summary": "Add notice by category",
+        "summary": "Add new notice by category",
+        "security": [{ "Bearer": [] }],
+        "description": "Adds a new pet notice to the specified category",
+        "operationId": "addNotice",
         "parameters": [
           {
             "in": "path",
             "name": "category",
-            "required": true,
-
-            "type": "string",
-
-            "description": "Category of the notice"
-          },
-          {
-            "in": "header",
-            "name": "Authorization",
-            "description": "Bearer token",
+            "description": "The category of the notice",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": ["sell", "in-good-hands", "lost-found"]
             }
           }
         ],
         "requestBody": {
-          "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
@@ -176,8 +170,7 @@
                   },
                   "sex": {
                     "type": "string",
-                    "description": "Pet's sex",
-                    "required": true
+                    "enum": ["male", "female"]
                   },
                   "comments": {
                     "type": "string",
@@ -205,12 +198,7 @@
           "404": {
             "description": "Category not found"
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/notices/notice/{id}": {
@@ -250,16 +238,8 @@
       "delete": {
         "tags": ["Notices"],
         "summary": "Delete notice by ID",
+        "security": [{ "Bearer": [] }],
         "parameters": [
-          {
-            "in": "header",
-            "name": "Authorization",
-            "description": "Bearer token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "in": "path",
             "name": "id",
@@ -285,10 +265,10 @@
       "put": {
         "tags": ["Notices"],
         "summary": "Updates notice",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "in": "path",
-
             "required": true,
             "schema": {
               "type": "string"
@@ -321,16 +301,8 @@
       "post": {
         "tags": ["Notices"],
         "summary": "Adds the notice with the specified ID to the user's favorites list",
+        "security": [{ "Bearer": [] }],
         "parameters": [
-          {
-            "in": "header",
-            "name": "Authorization",
-            "description": "Bearer token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "in": "path",
             "name": "id",
@@ -356,16 +328,12 @@
               "description": "Server error"
             }
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       },
       "delete": {
         "tags": ["Notices"],
         "summary": "Removes the notice with the specified ID from the user's favorites list",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "in": "header",
@@ -402,18 +370,14 @@
           "500": {
             "description": "Server error"
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/notices/favorites": {
       "get": {
         "tags": ["Notices"],
         "summary": "Get favorite notices",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "in": "header",
@@ -450,6 +414,7 @@
       "get": {
         "tags": ["Notices"],
         "summary": "Get notices created by user",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "in": "header",
@@ -479,12 +444,7 @@
             "description": "No notices found for given category",
             "content": {}
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/notices/search/{category}": {
@@ -738,7 +698,7 @@
         ]
       }
     },
-    "/api/pets/:id":  {
+    "/api/pets/:id": {
       "delete": {
         "tags": ["Pets"],
         "summary": "Delete the pet by id",
@@ -826,56 +786,54 @@
         "properties": {
           "titleOfAdd": {
             "type": "string",
-            "description": "Title of notice"
+            "description": "Title of notice",
+            "example": "Looking for good friend"
           },
           "name": {
             "type": "string",
-            "description": "Pet's name"
+            "description": "Pet's name",
+            "example": "Luna"
           },
           "birthday": {
             "type": "string",
-            "description": "Pet's birthday"
+            "description": "Pet's birthday",
+            "example": "11.12.2022"
           },
           "breed": {
             "type": "string",
-            "description": "Pet's breed"
+            "description": "Pet's breed",
+            "example": "Husky"
           },
           "location": {
             "type": "string",
-            "description": "Pet's location"
+            "description": "Pet's location",
+            "example": "Lviv"
           },
           "price": {
             "type": "number",
-            "description": "price for pet"
+            "description": "price for pet",
+            "example": "200"
           },
           "sex": {
             "type": "string",
-            "description": "Pet's sex"
+            "description": "Pet's sex",
+            "example": "male"
           },
           "avatarURL": {
             "type": "string",
-            "description": "Pet's image url"
+            "description": "Pet's image url",
+            "example": "https://images.unsplash.com/photo-1592754862816-1a21a4ea2281?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
           },
           "comments": {
             "type": "string",
-            "description": "comments about pet"
+            "description": "comments about pet",
+            "example": "Loves to play fetch and swim in the pool. Good with kids and other pets."
           },
           "category": {
             "type": "string",
-            "description": "Pet's category"
+            "description": "Pet's category",
+            "example": "sell"
           }
-        },
-        "example": {
-          "name": "Luna",
-          "birthday": "2019-01-04T22:00:00.000Z",
-          "breed": "Golden Retriever",
-          "location": "Los Angeles",
-          "price": 250,
-          "sex": "female",
-          "avatarURL": "https://images.unsplash.com/photo-1592754862816-1a21a4ea2281?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-          "comments": "Loves to play fetch and swim in the pool. Good with kids and other pets.",
-          "category": "sell",
-          "titleOfAdd": "Looking for good friend"
         }
       },
       "SearchNoticesResponse": {
