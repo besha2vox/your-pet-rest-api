@@ -1,6 +1,5 @@
 const Joi = require("joi");
-// const multer = require("multer");
-// const upload = multer();
+
 const { RequestError } = require("../helpers");
 
 const addNoticeJoiSchema = Joi.object({
@@ -30,7 +29,7 @@ const addNoticeJoiSchema = Joi.object({
   location: Joi.string().required().messages({
     "any.required": "Set location",
   }),
-  avatarURL: Joi.binary().required(),
+  avatarURL: Joi.string().required(),
   price: Joi.number()
     .min(1)
     .when("category", {
@@ -71,50 +70,36 @@ const addNoticeJoiSchema = Joi.object({
   .options({ abortEarly: false })
   .unknown(true);
 
-const noticeValidation = async (req, res, next) => {
-  const data = {};
-  console.log(req.body, "BODYY");
-  for (const [key, value] of Object.entries(req.body)) {
-    if (key !== "pets-photo") {
-      data[key] = value;
-    }
-  }
-  console.log(data, "data");
-  req.body = data;
+// const noticeValidation = async (req, res, next) => {
+//   upload.single("pets-photo")(req, res, (err) => {
+//     if (err instanceof multer.MulterError) {
+//       return next(new RequestError(400, "Error uploading image file"));
+//     } else if (err) {
+//       return next(new RequestError(400, "Error processing image file"));
+//     }
+//   });
+//   const data = {};
+//   for (const [key, value] of Object.entries(req.body)) {
+//     if (key !== "pets-photo") {
+//       data[key] = value;
+//     }
+//   }
+//   data.avatarURL = req.file.buffer;
+
+// const { error } = addNoticeJoiSchema.validate(data);
+// if (error) {
+//   return next(new RequestError(400, error.message));
+// }
+// next();
+// };
+
+const noticeValidation = (req, _, next) => {
   const { error } = addNoticeJoiSchema.validate(req.body);
   if (error) {
     return next(new RequestError(400, error.message));
   }
   next();
+  next();
 };
-
-// const noticeValidation = async (formData) => {
-//   console.log(formData.entries);
-//   try {
-//     const data = {};
-//     for (const [key, value] of formData.entries()) {
-//       if (key === "pets-photo") {
-//         data[key] = await value.arrayBuffer();
-//       } else {
-//         data[key] = value;
-//       }
-//     }
-//     const validatedData = await addNoticeJoiSchema.validateAsync(data);
-//     validatedData.birthday = moment(validatedData.birthday).toDate();
-//     return validatedData;
-//   } catch (err) {
-//     throw new RequestError(400, `Form data validation failed: ${err.message}`);
-//   }
-// };
-// const noticeValidation = (req, _, next) => {
-//   console.log(req.toString, "entries");
-//   const { error } = addNoticeJoiSchema.validate(req.body);
-//   if (error) {
-//     error.status = 400;
-//     next(error);
-//     return;
-//   }
-//   next();
-// };
 
 module.exports = { noticeValidation };
