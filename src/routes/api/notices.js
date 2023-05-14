@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  // isValidId,
-  auth,
-  uploadCloud,
-} = require("../../middlewares");
+const { auth, uploadCloud } = require("../../middlewares");
 
-// const { noticeValidation } = require("../../middlewares");
+const {
+  noticeValidation,
+  updateNoticeValidation,
+} = require("../../middlewares");
 const { notices: ctrl } = require("../../controllers");
 router.get("/", auth, ctrl.getUsersNotices);
 router.get("/favorites", auth, ctrl.getFavoriteNotices);
@@ -20,7 +19,7 @@ router.post(
   "/:category",
   auth,
   uploadCloud.single("pets-photo"),
-  // noticeValidation,
+  noticeValidation,
   ctrl.addNotice
 );
 router.delete("/notice/:id", auth, ctrl.removeNotice);
@@ -29,8 +28,8 @@ router.get("/search/:category", ctrl.searchByTitle);
 router.put(
   "/notice/:id",
   auth,
-  // noticeValidation,
   uploadCloud.single("pets-photo"),
+  updateNoticeValidation,
   ctrl.updateNotice
 );
 
