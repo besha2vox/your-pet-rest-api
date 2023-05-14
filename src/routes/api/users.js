@@ -1,5 +1,5 @@
 const express = require("express");
-const { validation, auth, uploadUserAvatar } = require("../../middlewares");
+const { validation, auth } = require("../../middlewares");
 const { schemas } = require("../../db/models");
 const { users: ctrl } = require("../../controllers");
 
@@ -30,9 +30,3 @@ router.get("/:id", auth, ctrl.getUserInfo);
 router.patch("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUserInfo);
 
 module.exports = router;
-
-// Resend verification
-// router.post("/verify", validation(schemas.emailSchema), ctrl.resendVerifyEmail);
-
-// Update avatar
-// router.patch("/avatars", auth, uploadUserAvatar.single("avatar"), ctrl.updateAvatar);

@@ -5,7 +5,6 @@ const auth = require("./auth");
 const uploadCloud = require("./uploadCloud");
 const petValidation = require("./petJoiValidation");
 const { noticeValidation } = require("./noticeJoiValidation");
-const uploadUserAvatar = require("./uploadUserAvatar");
 
 module.exports = {
   validation,
@@ -15,5 +14,4 @@ module.exports = {
   uploadCloud,
   petValidation,
   noticeValidation,
-  uploadUserAvatar,
 };
