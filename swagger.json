@@ -276,6 +276,53 @@
             "description": "Updates notice by ID"
           }
         ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pets-photo": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "titleOfAdd": {
+                    "type": "string",
+                    "description": "Title of notice"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Pet's name"
+                  },
+                  "birthday": {
+                    "type": "string",
+                    "description": "Pet's birthday"
+                  },
+                  "breed": {
+                    "type": "string",
+                    "description": "Pet's breed"
+                  },
+                  "location": {
+                    "type": "string",
+                    "description": "Pet's location"
+                  },
+                  "price": {
+                    "type": "number",
+                    "description": "Price for pet"
+                  },
+                  "sex": {
+                    "type": "string",
+                    "enum": ["male", "female"]
+                  },
+                  "comments": {
+                    "type": "string",
+                    "description": "Comments about pet"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -427,8 +474,11 @@
             "in": "path",
             "name": "category",
             "required": true,
-            "type": "string",
-            "description": "one of : sell, lost-found, in-good-hands"
+            "schema": {
+              "type": "string",
+              "enum": ["sell", "in-good-hands", "lost-found"]
+            },
+            "description": "choose category"
           },
           {
             "in": "query",
