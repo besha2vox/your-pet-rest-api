@@ -336,15 +336,6 @@
         "security": [{ "Bearer": [] }],
         "parameters": [
           {
-            "in": "header",
-            "name": "Authorization",
-            "description": "Bearer token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "in": "path",
             "name": "id",
             "required": true,
@@ -378,17 +369,7 @@
         "tags": ["Notices"],
         "summary": "Get favorite notices",
         "security": [{ "Bearer": [] }],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Authorization",
-            "description": "Bearer token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -415,17 +396,7 @@
         "tags": ["Notices"],
         "summary": "Get notices created by user",
         "security": [{ "Bearer": [] }],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Authorization",
-            "description": "Bearer token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Successful operation",
