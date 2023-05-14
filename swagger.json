@@ -83,6 +83,20 @@
         "summary": "Get notices by category",
         "parameters": [
           {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "string",
+            "description": "Page number for pagination. Default 1."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "string",
+            "description": "Count of articles per page. Default 6."
+          },
+          {
             "in": "path",
             "name": "category",
             "required": true,
@@ -416,7 +430,22 @@
         "tags": ["Notices"],
         "summary": "Get favorite notices",
         "security": [{ "Bearer": [] }],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "string",
+            "description": "Page number for pagination. Default 1."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "string",
+            "description": "Count of articles per page. Default 6."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -470,6 +499,20 @@
         "tags": ["Notices"],
         "summary": "Search notices by category and query",
         "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "string",
+            "description": "Page number for pagination. Default 1."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "string",
+            "description": "Count of articles per page. Default 6."
+          },
           {
             "in": "path",
             "name": "category",
