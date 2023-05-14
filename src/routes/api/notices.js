@@ -8,13 +8,14 @@ const {
   updateNoticeValidation,
 } = require("../../middlewares");
 const { notices: ctrl } = require("../../controllers");
+
 router.get("/", auth, ctrl.getUsersNotices);
 router.get("/favorites", auth, ctrl.getFavoriteNotices);
+
 router.post("/favorite/:id", auth, ctrl.addToFavorite);
 router.delete("/favorite/:id", auth, ctrl.removeFromFavorite);
-router.get("/:category", ctrl.getByCategory);
-router.get("/notice/:id", ctrl.getNoticeById);
 
+router.get("/:category", ctrl.getByCategory);
 router.post(
   "/:category",
   auth,
@@ -22,6 +23,8 @@ router.post(
   noticeValidation,
   ctrl.addNotice
 );
+
+router.get("/notice/:id", ctrl.getNoticeById);
 router.delete("/notice/:id", auth, ctrl.removeNotice);
 router.get("/search/:category", ctrl.searchByTitle);
 

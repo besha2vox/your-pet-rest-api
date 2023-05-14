@@ -13,7 +13,6 @@ const getFavoriteNotices = async (req, res) => {
     throw new RequestError(404, `User with id: ${ownerId} is not found`);
   }
   const favoriteNotices = user.favorite;
-  console.log(favoriteNotices, "favoriteNotices");
 
   const notices = await Notice.find(
     { _id: { $in: favoriteNotices } },
