@@ -1,6 +1,8 @@
 const Joi = require("joi");
+const moment = require("moment");
 
 const { RequestError } = require("../helpers");
+const datePattern = /^\d{2}\.\d{2}\.\d{4}$/;
 
 const addNoticeJoiSchema = Joi.object({
   name: Joi.string()
@@ -14,7 +16,19 @@ const addNoticeJoiSchema = Joi.object({
       "string.max": "Name cannot exceed 16 characters",
       "string.pattern.base": "Name must only contain letters",
     }),
-  birthday: Joi.string().required(),
+  birthday: Joi.string()
+    .regex(datePattern)
+    .custom((value, helpers) => {
+      const date = moment(value, "DD.MM.YYYY");
+      if (!date.isValid()) {
+        return helpers.error("string.dateInvalid");
+      }
+      return date.toDate();
+    })
+    .messages({
+      "string.pattern.base": "Invalid date format",
+      "string.dateInvalid": "Invalid date",
+    }),
   breed: Joi.string()
     .min(2)
     .max(16)
@@ -66,7 +80,19 @@ const updateNoticeJoiSchema = Joi.object({
     "string.max": "Name cannot exceed 16 characters",
     "string.pattern.base": "Name must only contain letters",
   }),
-  birthday: Joi.string(),
+  birthday: Joi.string()
+    .regex(datePattern)
+    .custom((value, helpers) => {
+      const date = moment(value, "DD.MM.YYYY");
+      if (!date.isValid()) {
+        return helpers.error("string.dateInvalid");
+      }
+      return date.toDate();
+    })
+    .messages({
+      "string.pattern.base": "Invalid date format",
+      "string.dateInvalid": "Invalid date",
+    }),
   breed: Joi.string().min(2).max(16).messages({
     "string.min": "Breed must have at least 2 characters",
     "string.max": "Breed cannot exceed 16 characters",

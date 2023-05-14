@@ -1,6 +1,7 @@
 const { Schema, model } = require("mongoose");
-// const moment = require("moment");
+const moment = require("moment");
 const { handleSchemaValidationError } = require("../../helpers");
+
 const noticeSchema = Schema(
   {
     name: {
@@ -10,8 +11,15 @@ const noticeSchema = Schema(
       maxlength: 16,
     },
     birthday: {
-      type: String,
-      required: true,
+      type: Date,
+      get: (v) => moment(v).format("DD.MM.YYYY"),
+      set: (v) => moment(v, "DD.MM.YYYY").toDate(),
+      validate: {
+        validator: function (value) {
+          return moment(value, "DD.MM.YYYY", true).isValid();
+        },
+        message: "Invalid birth date format (must be dd.mm.yyyy)",
+      },
     },
 
     breed: {
@@ -67,14 +75,6 @@ const noticeSchema = Schema(
   },
   { versionKey: false, timestamps: true }
 );
-
-// noticeSchema.pre("save", function (next) {
-//   if (this.birthday) {
-//     console.log(this.birthday, "this.birthday");
-//     this.birthday = moment(this.birthday).toDate();
-//   }
-//   next();
-// });
 
 noticeSchema.post("save", handleSchemaValidationError);
 
