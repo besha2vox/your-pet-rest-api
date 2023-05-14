@@ -20,7 +20,10 @@ async function addPet(req, res) {
         avatarURL: req.file.path,
         owner
     });
-    res.status(201).json(result);
+    res.status(201).json({
+        message: "Information about the pet was published",
+        result
+    });
 }
 
 async function deletePetId(req, res) {
