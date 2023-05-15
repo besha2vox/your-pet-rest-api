@@ -10,7 +10,7 @@
     }
   },
   "consumes": ["application/json", "multipart/form-data"],
-  "produces": ["application/json"],
+  "produces": ["application/json", "multipart/form-data"],
   "servers": [
     { "url": "https://your-pet-by-it-kotiki.onrender.com" },
     { "url": "http://localhost:3000" }
@@ -23,6 +23,10 @@
     {
       "name": "Notices",
       "description": "Endpoints for notices managing"
+    },
+    {
+      "name": "Pets",
+      "description": "Endpoints for user's pets"
     },
     {
       "name": "News",
@@ -79,6 +83,20 @@
         "summary": "Get notices by category",
         "parameters": [
           {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "string",
+            "description": "Page number for pagination. Default 1."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "string",
+            "description": "Count of articles per page. Default 6."
+          },
+          {
             "in": "path",
             "name": "category",
             "required": true,
@@ -108,40 +126,96 @@
       },
       "post": {
         "tags": ["Notices"],
-        "summary": "Add notices by category",
+        "summary": "Add new notice by category",
+        "security": [{ "Bearer": [] }],
+        "description": "Adds a new pet notice to the specified category",
+        "operationId": "addNotice",
         "parameters": [
           {
             "in": "path",
-
+            "name": "category",
+            "description": "The category of the notice",
             "required": true,
             "schema": {
-              "type": "string"
-            },
-            "description": "Add notice by category"
+              "type": "string",
+              "enum": ["sell", "in-good-hands", "lost-found"]
+            }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GetNoticeResponse"
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pets-photo": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "titleOfAdd": {
+                    "type": "string",
+                    "description": "Title of notice",
+                    "required": true
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Pet's name",
+                    "required": true
+                  },
+                  "birthday": {
+                    "type": "string",
+                    "description": "Pet's birthday",
+                    "required": true
+                  },
+                  "breed": {
+                    "type": "string",
+                    "description": "Pet's breed",
+                    "required": true
+                  },
+                  "location": {
+                    "type": "string",
+                    "description": "Pet's location",
+                    "required": true
+                  },
+                  "price": {
+                    "type": "number",
+                    "description": "Price for pet",
+                    "required": false
+                  },
+                  "sex": {
+                    "type": "string",
+                    "enum": ["male", "female"]
+                  },
+                  "comments": {
+                    "type": "string",
+                    "description": "Comments about pet"
                   }
                 }
               }
             }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Notice created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNoticeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "No notices found for given category",
-            "content": {}
+            "description": "Category not found"
           }
         }
       }
     },
-    "/api/notices/{id}": {
+    "/api/notices/notice/{id}": {
       "get": {
         "tags": ["Notices"],
         "summary": "Get notice by ID",
@@ -178,6 +252,7 @@
       "delete": {
         "tags": ["Notices"],
         "summary": "Delete notice by ID",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "in": "path",
@@ -204,10 +279,10 @@
       "put": {
         "tags": ["Notices"],
         "summary": "Updates notice",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "in": "path",
-
             "required": true,
             "schema": {
               "type": "string"
@@ -215,6 +290,53 @@
             "description": "Updates notice by ID"
           }
         ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pets-photo": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "titleOfAdd": {
+                    "type": "string",
+                    "description": "Title of notice"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Pet's name"
+                  },
+                  "birthday": {
+                    "type": "string",
+                    "description": "Pet's birthday"
+                  },
+                  "breed": {
+                    "type": "string",
+                    "description": "Pet's breed"
+                  },
+                  "location": {
+                    "type": "string",
+                    "description": "Pet's location"
+                  },
+                  "price": {
+                    "type": "number",
+                    "description": "Price for pet"
+                  },
+                  "sex": {
+                    "type": "string",
+                    "enum": ["male", "female"]
+                  },
+                  "comments": {
+                    "type": "string",
+                    "description": "Comments about pet"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -236,10 +358,11 @@
         }
       }
     },
-    "/api/notices/{id}/favorite": {
+    "/api/notices/favorite/{id}": {
       "post": {
         "tags": ["Notices"],
         "summary": "Adds the notice with the specified ID to the user's favorites list",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "in": "path",
@@ -271,6 +394,7 @@
       "delete": {
         "tags": ["Notices"],
         "summary": "Removes the notice with the specified ID from the user's favorites list",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "in": "path",
@@ -301,17 +425,25 @@
         }
       }
     },
-    "/api/notices/favorite": {
+    "/api/notices/favorites": {
       "get": {
         "tags": ["Notices"],
         "summary": "Get favorite notices",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
-            "in": "path",
-
-            "required": true,
-
-            "description": "Category to filter favorite notices"
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "string",
+            "description": "Page number for pagination. Default 1."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "string",
+            "description": "Count of articles per page. Default 6."
           }
         ],
         "responses": {
@@ -339,17 +471,8 @@
       "get": {
         "tags": ["Notices"],
         "summary": "Get notices created by user",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Authorization",
-            "description": "Bearer token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -368,12 +491,7 @@
             "description": "No notices found for given category",
             "content": {}
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/notices/search/{category}": {
@@ -382,11 +500,28 @@
         "summary": "Search notices by category and query",
         "parameters": [
           {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "type": "string",
+            "description": "Page number for pagination. Default 1."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "string",
+            "description": "Count of articles per page. Default 6."
+          },
+          {
             "in": "path",
             "name": "category",
             "required": true,
-            "type": "string",
-            "description": "one of : sell, lost-found, in-good-hands"
+            "schema": {
+              "type": "string",
+              "enum": ["sell", "in-good-hands", "lost-found"]
+            },
+            "description": "choose category"
           },
           {
             "in": "query",
@@ -538,6 +673,130 @@
           }
         }
       }
+    },
+    "/api/pets": {
+      "post": {
+        "tags": ["Pets"],
+        "summary": "Add user's pet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pets",
+            "required": true,
+            "type": "string",
+            "description": "Add user's pet"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pets-photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "pet's avatar"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Pet's name",
+                    "required": true
+                  },
+                  "birthday": {
+                    "type": "date",
+                    "description": "Pet's birthday",
+                    "required": true
+                  },
+                  "breed": {
+                    "type": "string",
+                    "description": "Pet's breed",
+                    "required": true
+                  },
+                  "comments": {
+                    "type": "string",
+                    "description": "Comments about pet"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Information about the pet was published",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostPetsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400, `The file is not loaded/The text fields are not filled in"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/pets/:id": {
+      "delete": {
+        "tags": ["Pets"],
+        "summary": "Delete the pet by id",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Delete the pet by id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The pet was deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletePetByIdResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pet with id ${id} not found"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -586,56 +845,54 @@
         "properties": {
           "titleOfAdd": {
             "type": "string",
-            "description": "Title of notice"
+            "description": "Title of notice",
+            "example": "Looking for good friend"
           },
           "name": {
             "type": "string",
-            "description": "Pet's name"
+            "description": "Pet's name",
+            "example": "Luna"
           },
           "birthday": {
             "type": "string",
-            "description": "Pet's birthday"
+            "description": "Pet's birthday",
+            "example": "11.12.2022"
           },
           "breed": {
             "type": "string",
-            "description": "Pet's breed"
+            "description": "Pet's breed",
+            "example": "Husky"
           },
           "location": {
             "type": "string",
-            "description": "Pet's location"
+            "description": "Pet's location",
+            "example": "Lviv"
           },
           "price": {
             "type": "number",
-            "description": "price for pet"
+            "description": "price for pet",
+            "example": "200"
           },
           "sex": {
             "type": "string",
-            "description": "Pet's sex"
+            "description": "Pet's sex",
+            "example": "male"
           },
           "avatarURL": {
             "type": "string",
-            "description": "Pet's image url"
+            "description": "Pet's image url",
+            "example": "https://images.unsplash.com/photo-1592754862816-1a21a4ea2281?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
           },
           "comments": {
             "type": "string",
-            "description": "comments about pet"
+            "description": "comments about pet",
+            "example": "Loves to play fetch and swim in the pool. Good with kids and other pets."
           },
           "category": {
             "type": "string",
-            "description": "Pet's category"
+            "description": "Pet's category",
+            "example": "sell"
           }
-        },
-        "example": {
-          "name": "Luna",
-          "birthday": "2019-01-04T22:00:00.000Z",
-          "breed": "Golden Retriever",
-          "location": "Los Angeles",
-          "price": 250,
-          "sex": "female",
-          "avatarURL": "https://images.unsplash.com/photo-1592754862816-1a21a4ea2281?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-          "comments": "Loves to play fetch and swim in the pool. Good with kids and other pets.",
-          "category": "sell",
-          "titleOfAdd": "Looking for good friend"
         }
       },
       "SearchNoticesResponse": {
@@ -829,6 +1086,48 @@
             "email": "press@citynet.kharkov.ua"
           }
         ]
+      },
+      "PostPetsResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Pet's name"
+          },
+          "birthday": {
+            "type": "string",
+            "description": "Pet's birthday"
+          },
+          "breed": {
+            "type": "string",
+            "description": "Pet's breed"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "Pet's image url"
+          },
+          "comments": {
+            "type": "string",
+            "description": "comments about pet"
+          },
+          "owner": {
+            "type": "string",
+            "description": "pet's owner"
+          },
+          "_id": {
+            "type": "string",
+            "description": "pet's id"
+          }
+        },
+        "example": {
+          "name": "Derek",
+          "birthday": "2019-04-03T21:00:00.000Z",
+          "breed": "domestic cat",
+          "comments": "my lovely cat",
+          "owner": "645f88639994886006f9a291",
+          "avatarURL": "https://res.cloudinary.com/dgei1ulzc/image/upload/v1684017393/ryt2sd2jixhzisfzubvv.jpg",
+          "_id": "646010f2da84cd379a718d04"
+        }
       }
     },
     "securitySchemes": {

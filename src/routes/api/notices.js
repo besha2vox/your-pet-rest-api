@@ -1,52 +1,38 @@
 const express = require("express");
-
 const router = express.Router();
 
-const {
-  // isValidId,
-  auth,
-  uploadCloud,
-} = require("../../middlewares");
+const { auth, uploadCloud } = require("../../middlewares");
 
-// const { noticeValidation } = require("../../middlewares");
+const {
+  noticeValidation,
+  updateNoticeValidation,
+} = require("../../middlewares");
 const { notices: ctrl } = require("../../controllers");
 
+router.get("/", auth, ctrl.getUsersNotices);
+router.get("/favorites", auth, ctrl.getFavoriteNotices);
+
+router.post("/favorite/:id", auth, ctrl.addToFavorite);
+router.delete("/favorite/:id", auth, ctrl.removeFromFavorite);
+
 router.get("/:category", ctrl.getByCategory);
-router.get("/:id", ctrl.getNoticeById);
-router.post(
-  "/:id/favorite",
-  // auth,
-  ctrl.addToFavorite
-);
-router.get("/favorite", auth, ctrl.getFavoriteNotices);
-router.delete(
-  "/:id/favorite",
-  // auth,
-  ctrl.removeFromFavorite
-);
 router.post(
   "/:category",
-  // auth,
-
-  // noticeValidation,
+  auth,
   uploadCloud.single("pets-photo"),
+  noticeValidation,
   ctrl.addNotice
 );
-router.get(
-  "/",
-  // auth,
-  ctrl.getUsersNotices
-);
-router.delete(
-  "/:id",
-  // auth,
-  ctrl.removeNotice
-);
+
+router.get("/notice/:id", ctrl.getNoticeById);
+router.delete("/notice/:id", auth, ctrl.removeNotice);
 router.get("/search/:category", ctrl.searchByTitle);
 
 router.put(
-  "/:id",
-  // auth, noticeValidation,
+  "/notice/:id",
+  auth,
+  uploadCloud.single("pets-photo"),
+  updateNoticeValidation,
   ctrl.updateNotice
 );
 

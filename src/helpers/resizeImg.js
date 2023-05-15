@@ -1,9 +1,9 @@
-const jimp = require("jimp");
+const Jimp = require("jimp");
 
 const resizeImg = async (imgPath, width, height) => {
-  const image = await jimp.read(imgPath);
-  image.resize(width, height);
-  await image.writeAsync(imgPath);
+  const image = await Jimp.read(imgPath);
+  await image.resize(width, height).writeAsync(imgPath);
 };
+
 
 module.exports = resizeImg;

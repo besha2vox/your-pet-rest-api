@@ -1,13 +1,14 @@
 const Joi = require("joi");
-const multer = require("multer");
-const upload = multer();
+const moment = require("moment");
+
 const { RequestError } = require("../helpers");
+const datePattern = /^\d{2}\.\d{2}\.\d{4}$/;
 
 const addNoticeJoiSchema = Joi.object({
   name: Joi.string()
     .min(2)
     .max(16)
-    .pattern(/^[a-zA-Z]+$/)
+
     .required()
     .messages({
       "any.required": "Set name for pet",
@@ -15,11 +16,23 @@ const addNoticeJoiSchema = Joi.object({
       "string.max": "Name cannot exceed 16 characters",
       "string.pattern.base": "Name must only contain letters",
     }),
-  birthday: Joi.string().required(),
+  birthday: Joi.string()
+    .regex(datePattern)
+    .custom((value, helpers) => {
+      const date = moment(value, "DD.MM.YYYY");
+      if (!date.isValid()) {
+        return helpers.error("string.dateInvalid");
+      }
+      return date.toDate();
+    })
+    .messages({
+      "string.pattern.base": "Invalid date format",
+      "string.dateInvalid": "Invalid date",
+    }),
   breed: Joi.string()
     .min(2)
     .max(16)
-    .pattern(/^[a-zA-Z]+$/)
+
     .required()
     .messages({
       "any.required": "Set type of breed",
@@ -30,7 +43,6 @@ const addNoticeJoiSchema = Joi.object({
   location: Joi.string().required().messages({
     "any.required": "Set location",
   }),
-  avatarURL: Joi.binary().required(),
   price: Joi.number()
     .min(1)
     .when("category", {
@@ -41,99 +53,88 @@ const addNoticeJoiSchema = Joi.object({
       "number.min": "Price must be higher than 0",
       "any.required": "Set price for sell category",
     }),
-  sex: Joi.string()
-    .valid("male", "female")
-    .when("category", {
-      is: Joi.string().valid("sell", "lost/found", "in good hands"),
-      then: Joi.required(),
-    })
-    .messages({
-      "any.required": "Set sex for notice",
-      "any.only": "Invalid sex value",
-    }),
+  sex: Joi.string().valid("male", "female").required().messages({
+    "any.required": "Set sex for notice",
+    "any.only": "Invalid sex value",
+  }),
   comments: Joi.string().min(8).max(120).allow(null).messages({
     "string.min": "Comments must have at least 8 characters",
     "string.max": "Comments cannot exceed 120 characters",
   }),
-  category: Joi.string()
-    .valid("sell", "lost-found", "in-good-hands")
-    .required()
-    .messages({
-      "any.required": "Choose category",
-      "any.only": "Invalid category value",
-    }),
+  category: Joi.string().valid("sell", "lost-found", "in-good-hands").messages({
+    "any.only": "Invalid category value",
+  }),
   titleOfAdd: Joi.string().min(8).max(60).messages({
     "string.min": "Title of add must have at least 8 characters",
     "string.max": "Title of add cannot exceed 60 characters",
   }),
   favorite: Joi.array(),
+  file: Joi.any().meta({ swaggerType: "file" }).optional().allow(""),
 })
   .options({ abortEarly: false })
   .unknown(true);
 
-// const noticeValidation = async (req, res, next) => {
-//   const data = {};
-//   console.log(req.body, "BODYY");
-//   for (const [key, value] of Object.entries(req.body)) {
-//     if (key !== "pets-photo") {
-//       data[key] = value;
-//     }
-//   }
-//   console.log(data, "data");
-//   req.body = data;
-//   const { error } = addNoticeJoiSchema.validate(req.body);
-//   if (error) {
-//     return next(new RequestError(400, error.message));
-//   }
-//   next();
-// };
-
-// const noticeValidation = async (formData) => {
-//   console.log(formData.entries);
-//   try {
-//     const data = {};
-//     for (const [key, value] of formData.entries()) {
-//       if (key === "pets-photo") {
-//         data[key] = await value.arrayBuffer();
-//       } else {
-//         data[key] = value;
-//       }
-//     }
-//     const validatedData = await addNoticeJoiSchema.validateAsync(data);
-//     validatedData.birthday = moment(validatedData.birthday).toDate();
-//     return validatedData;
-//   } catch (err) {
-//     throw new RequestError(400, `Form data validation failed: ${err.message}`);
-//   }
-// };
-// const noticeValidation = (req, _, next) => {
-//   console.log(req.toString, "entries");
-//   const { error } = addNoticeJoiSchema.validate(req.body);
-//   if (error) {
-//     error.status = 400;
-//     next(error);
-//     return;
-//   }
-//   next();
-// };
+const updateNoticeJoiSchema = Joi.object({
+  name: Joi.string().min(2).max(16).messages({
+    "string.min": "Name must have at least 2 characters",
+    "string.max": "Name cannot exceed 16 characters",
+    "string.pattern.base": "Name must only contain letters",
+  }),
+  birthday: Joi.string()
+    .regex(datePattern)
+    .custom((value, helpers) => {
+      const date = moment(value, "DD.MM.YYYY");
+      if (!date.isValid()) {
+        return helpers.error("string.dateInvalid");
+      }
+      return date.toDate();
+    })
+    .messages({
+      "string.pattern.base": "Invalid date format",
+      "string.dateInvalid": "Invalid date",
+    }),
+  breed: Joi.string().min(2).max(16).messages({
+    "string.min": "Breed must have at least 2 characters",
+    "string.max": "Breed cannot exceed 16 characters",
+    "string.pattern.base": "Breed must only contain letters",
+  }),
+  location: Joi.string(),
+  price: Joi.number().min(1).messages({
+    "number.min": "Price must be higher than 0",
+  }),
+  sex: Joi.string().valid("male", "female").messages({
+    "any.only": "Invalid sex value",
+  }),
+  comments: Joi.string().min(8).max(120).allow(null).messages({
+    "string.min": "Comments must have at least 8 characters",
+    "string.max": "Comments cannot exceed 120 characters",
+  }),
+  category: Joi.string().valid("sell", "lost-found", "in-good-hands").messages({
+    "any.only": "Invalid category value",
+  }),
+  titleOfAdd: Joi.string().min(8).max(60).messages({
+    "string.min": "Title of add must have at least 8 characters",
+    "string.max": "Title of add cannot exceed 60 characters",
+  }),
+  favorite: Joi.array(),
+  file: Joi.any().meta({ swaggerType: "file" }).optional().allow(""),
+})
+  .options({ abortEarly: false })
+  .unknown(true);
 
 const noticeValidation = (req, _, next) => {
-  upload.any()(req, _, (err) => {
-    if (err) {
-      return next(new RequestError(400, err.message));
-    }
-    next();
-  });
-
-  console.log(req.body); // You can access the data sent through form-data here
-
   const { error } = addNoticeJoiSchema.validate(req.body);
   if (error) {
-    error.status = 400;
-    next(error);
-    return;
+    return next(new RequestError(400, error.message));
+  }
+  next();
+};
+const updateNoticeValidation = (req, _, next) => {
+  const { error } = updateNoticeJoiSchema.validate(req.body);
+  if (error) {
+    return next(new RequestError(400, error.message));
   }
   next();
 };
 
-module.exports = { noticeValidation };
+module.exports = { noticeValidation, updateNoticeValidation };

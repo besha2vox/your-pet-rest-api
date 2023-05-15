@@ -13,6 +13,15 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   folder: "pets-photo",
   allowedFormats: ["jpg", "png"],
+  params: {
+    transformation: [
+      {
+        width: 400,
+        height: null,
+        scale: "both"
+      }
+    ]
+  },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
   },

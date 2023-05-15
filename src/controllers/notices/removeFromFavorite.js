@@ -4,31 +4,32 @@ const { RequestError } = require("../../helpers");
 const { ctrlWrapper } = require("../../middlewares");
 
 const removeFromFavorite = async (req, res) => {
-  // const { _id: userId } = req.user;
+  const { _id: userId } = req.user;
   const { id: noticeId } = req.params;
-  const userId = "645d2f7a502bb608851a31f4";
 
   const user = await User.findById(userId);
   if (!user) {
     throw new RequestError(404, `User with id: ${userId} not found`);
   }
 
-  // Remove noticeId from the favorite array field in User model
   const updatedUser = await User.findByIdAndUpdate(
     userId,
-    { $pull: { favorite: noticeId } },
+    { $pull: { favorite: { $eq: noticeId } } },
     { new: true }
+  ).populate(
+    "favorite",
+    "titleOfAdd avatarURL category name birthday breed location price sex comments"
   );
-  // .populate("favorite");
 
-  const updatedNotice = await Notice.findByIdAndUpdate(
+  updatedUser.password = undefined;
+  await Notice.findByIdAndUpdate(
     noticeId,
-    { $pull: { favorite: userId } },
+    { $pull: { favorite: { $eq: userId } } },
     { new: true }
   );
 
   res.json({
-    result: { updatedUser, updatedNotice },
+    result: { updatedUser },
   });
 };
 

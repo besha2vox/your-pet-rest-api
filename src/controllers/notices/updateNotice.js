@@ -1,5 +1,4 @@
 const { Notice } = require("../../db/models");
-
 const { RequestError } = require("../../helpers");
 const { ctrlWrapper } = require("../../middlewares");
 
@@ -23,23 +22,21 @@ const updateNotice = async (req, res) => {
     );
   }
 
-  const noticeData = req.body;
-
-  if (!req.file) {
-    throw new RequestError(422, `no file uploaded`);
-  }
+  const noticeData = await req.body;
 
   const data = req.file
     ? { ...noticeData, avatarURL: req.file.path }
     : { ...noticeData };
+  console.log(data, "data");
 
   const updatedNotice = await Notice.findByIdAndUpdate(noticeId, data, {
     new: true,
   });
 
   if (!updatedNotice) {
-    throw new RequestError(400, `error: notice is not updated`);
+    throw new RequestError(400, `Error: notice is not updated`);
   }
+
   res.status(201).json({
     result: updatedNotice,
   });
