@@ -783,14 +783,7 @@
         ],
         "responses": {
           "204": {
-            "description": "The pet was deleted",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeletePetByIdResponse"
-                }
-              }
-            }
+            "description": "The pet was deleted"
           },
           "404": {
             "description": "Pet with id ${id} not found"
