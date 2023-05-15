@@ -190,7 +190,24 @@
                     "type": "string",
                     "description": "Comments about pet"
                   }
-                }
+                },
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/NoticeRequestBody"
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "category": {
+                          "const": "sell"
+                        }
+                      }
+                    },
+                    "then": {
+                      "required": ["price"]
+                    }
+                  }
+                ]
               }
             }
           }
