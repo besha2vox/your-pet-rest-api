@@ -11,15 +11,19 @@ const catSchema = Schema(
       maxlength: 40,
     },
 
-    breed: {
+    gitURL: {
       type: String,
-      minlength: 2,
-      maxlength: 40,
+      required: true,
+    },
+    telegramURL: {
+      type: String,
+    },
+    linkedInURL: {
+      type: String,
+      required: true,
     },
     comments: {
       type: String,
-      minlength: 8,
-      maxlength: 120,
       default: null,
     },
 
