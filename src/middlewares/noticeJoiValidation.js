@@ -43,16 +43,9 @@ const addNoticeJoiSchema = Joi.object({
   location: Joi.string().required().messages({
     "any.required": "Set location",
   }),
-  price: Joi.number()
-    .min(1)
-    .when("category", {
-      is: Joi.string().valid("sell"),
-      then: Joi.required(),
-    })
-    .messages({
-      "number.min": "Price must be higher than 0",
-      "any.required": "Set price for sell category",
-    }),
+  price: Joi.number().min(1).messages({
+    "number.min": "Price must be higher than 0",
+  }),
   sex: Joi.string().valid("male", "female").required().messages({
     "any.required": "Set sex for notice",
     "any.only": "Invalid sex value",
