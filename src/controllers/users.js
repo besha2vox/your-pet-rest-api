@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { User } = require("../db/models");
+const { User, Pet } = require("../db/models");
+
 const { RequestError } = require("../helpers");
 const { controllerWrap } = require("../utils/validation");
 const { v4: uuidv4 } = require("uuid");
@@ -115,20 +116,30 @@ const verify = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { _id } = req.user;
-  const data = req.body;
-  const updatedData = await User.findByIdAndUpdate(_id, data, { new: true });
-  if (!updatedData) {
-    throw RequestError(401, "Not authorized");
+  const data = await req.body;
+
+  const updatedUserData = await User.findByIdAndUpdate(_id, data, { new: true });
+
+  if (!updatedUserData) {
+    throw new RequestError(400, `Error: user is not updated`);
   }
-  res.status(200).json(updatedData);
+
+  res.status(200).json({ result: updatedUserData });
 };
 
 const getUserInfo = async (req, res) => {
   const { _id } = req.user;
-  const userInfo = await User.findById(_id).populate("pet");
+  const userInfo = await User.findById(_id);
+
   if (!userInfo) {
     throw RequestError(401, "Not authorized");
   }
+  const userPets = await Pet.find({ owner: _id });
+
+  if (!userPets) {
+    throw new RequestError(404, `no match for your request`);
+  }
+
   res.status(200).json({
     user: {
       username: userInfo.username,
@@ -136,20 +147,34 @@ const getUserInfo = async (req, res) => {
       phone: userInfo.phone,
       city: userInfo.city,
       birthday: userInfo.birthday,
-      favorite: userInfo.favorite,
-      pet: userInfo.pet,
+      pet: userPets,
     },
   });
 };
 
-const updateUserInfo = async (req, res) => {
-  const { _id } = req.user;
-  const data = req.body;
-  const updatedData = await User.findByIdAndUpdate(_id, data).populate("pet");
-  if (!updatedData) {
-    throw RequestError(401, "Not authorized");
+const updateUserPets = async (req, res) => {
+  const { _id: ownerId } = req.user;
+  const { id: petId } = req.params;
+  if (!req.body) {
+    throw new RequestError(422, `there is no body content`);
   }
-  res.status(200).json(updatedData);
+  const pet = await Pet.findById(petId);
+  if (!pet) {
+    throw new RequestError(404, `Pet with id: ${petId} is not found`);
+  }
+  if (pet.owner?.toString() !== ownerId?.toString()) {
+    throw new RequestError(403, `User has no access to update the pet with id  ${petId}`);
+  }
+  const petData = await req.body;
+  const data = req.file ? { ...petData, avatarURL: req.file.path } : { ...petData };
+
+  const updateUserPet = await Pet.findByIdAndUpdate(petId, data, { new: true });
+
+  if (!updateUserPet) {
+    throw new RequestError(400, `Error: notice is not updated`);
+  }
+
+  res.status(200).json({ result: updateUserPet });
 };
 
 module.exports = {
@@ -160,5 +185,5 @@ module.exports = {
   verify: controllerWrap(verify),
   updateUser: controllerWrap(updateUser),
   getUserInfo: controllerWrap(getUserInfo),
-  updateUserInfo: controllerWrap(updateUserInfo),
+  updateUserPets: controllerWrap(updateUserPets),
 };

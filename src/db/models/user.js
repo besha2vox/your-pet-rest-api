@@ -3,8 +3,7 @@ const Joi = require("joi");
 const { handleMongooseError } = require("../../utils/validation");
 
 const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-const mobileRegex =
-  /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+const mobileRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 
 const userSchema = new Schema(
   {
@@ -86,7 +85,7 @@ const schemas = {
   updateUserSchema: Joi.object({
     birthday: Joi.string()
       .pattern(/^([0-2]\d|3[0-1])\.(0\d|1[0-2])\.\d{4}$/)
-      .required()
+
       .messages({
         "any.required": "Set your birthday",
         "date.base": "Invalid date format",
@@ -96,7 +95,7 @@ const schemas = {
       .messages({
         "any.required": "Set your city",
       }),
-    phone: Joi.string().pattern(mobileRegex).required().messages({
+    phone: Joi.string().pattern(mobileRegex).messages({
       "any.required": "Set your phone number",
     }),
   }),
