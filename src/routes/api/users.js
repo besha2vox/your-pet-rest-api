@@ -27,6 +27,6 @@ router.put("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUser);
 router.get("/:id", auth, ctrl.getUserInfo);
 
 // Update info about user and user's pets
-router.put("/:id/pets/:id", auth, validation(updatePetJoiSchema), ctrl.updateUserPets);
+router.put("/pets/:id", auth, validation(updatePetJoiSchema), ctrl.updateUserPets);
 
 module.exports = router;

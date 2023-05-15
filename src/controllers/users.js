@@ -116,21 +116,30 @@ const verify = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { _id } = req.user;
-  const data = req.body;
-  const updatedData = await User.findByIdAndUpdate(_id, data, { new: true });
-  if (!updatedData) {
-    throw RequestError(401, "Not authorized");
+  const data = await req.body;
+
+  const updatedUserData = await User.findByIdAndUpdate(_id, data, { new: true });
+
+  if (!updatedUserData) {
+    throw new RequestError(400, `Error: user is not updated`);
   }
-  res.status(200).json(updatedData);
+
+  res.status(200).json({ result: updatedUserData });
 };
 
 const getUserInfo = async (req, res) => {
   const { _id } = req.user;
   const userInfo = await User.findById(_id);
-  const userPets = await Pet.find({ owner: _id });
+
   if (!userInfo) {
     throw RequestError(401, "Not authorized");
   }
+  const userPets = await Pet.find({ owner: _id });
+
+  if (!userPets) {
+    throw new RequestError(404, `no match for your request`);
+  }
+
   res.status(200).json({
     user: {
       username: userInfo.username,
