@@ -4,7 +4,7 @@ const { RequestError } = require("../../helpers");
 const { ctrlWrapper } = require("../../middlewares");
 
 const searchByTitle = async (req, res) => {
-  const { page = 1, limit = 12, q } = req.query;
+  const { page = 1, limit = 12, q = "" } = req.query;
   const skip = (page - 1) * limit;
   const { category = "sell" } = req.params;
 
