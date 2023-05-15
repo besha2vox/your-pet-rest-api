@@ -24,10 +24,10 @@ router.post(
   ctrl.addNotice
 );
 
-router.get("/notice/:id", ctrl.getNoticeById);
-router.delete("/notice/:id", auth, ctrl.removeNotice);
 router.get("/search/:category", ctrl.searchByTitle);
 
+router.get("/notice/:id", ctrl.getNoticeById);
+router.delete("/notice/:id", auth, ctrl.removeNotice);
 router.put(
   "/notice/:id",
   auth,
