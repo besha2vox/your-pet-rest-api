@@ -103,7 +103,7 @@
 
             "type": "string",
 
-            "description": "one of: sell, lost-found, in-good-hands"
+            "description": "one of: sell, slost-found, in-good-hands"
           }
         ],
 
@@ -190,7 +190,24 @@
                     "type": "string",
                     "description": "Comments about pet"
                   }
-                }
+                },
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/NoticeRequestBody"
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "category": {
+                          "const": "sell"
+                        }
+                      }
+                    },
+                    "then": {
+                      "required": ["price"]
+                    }
+                  }
+                ]
               }
             }
           }
@@ -511,7 +528,7 @@
             "name": "limit",
             "required": false,
             "type": "string",
-            "description": "Count of articles per page. Default 6."
+            "description": "Count of articles per page. Default 12."
           },
           {
             "in": "path",
