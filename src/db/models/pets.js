@@ -17,14 +17,14 @@ const petSchema = Schema(
     },
     birthday: {
       type: Date,
-      required: [true, 'Set date of birth'],
-      get: (v) => moment(v).format('DD.MM.YYYY'),
-      set: (v) => moment(v, 'DD.MM.YYYY').toDate(),
+      required: [true, "Set date of birth"],
+      get: (v) => moment(v).format("DD.MM.YYYY"),
+      set: (v) => moment(v, "DD.MM.YYYY").toDate(),
       validate: {
         validator: function (value) {
-          return moment(value, 'DD.MM.YYYY', true).isValid();
+          return moment(value, "DD.MM.YYYY", true).isValid();
         },
-        message: 'Invalid birthdate format (must be dd.mm.yyyy)',
+        message: "Invalid birthdate format (must be dd.mm.yyyy)",
       },
     },
     breed: {
@@ -56,43 +56,68 @@ const petSchema = Schema(
 petSchema.post("save", handleSchemaValidationError);
 
 const addPetJoiSchema = Joi.object({
-  name: Joi.string()
-    .min(2)
-    .max(16)
-    .pattern(stringPattern)
-    .required()
-    .messages({
-      "any.required": "Set name for pet",
-      "string.min": "Name must have at least 2 characters",
-      "string.max": "Name cannot exceed 16 characters",
-      "string.pattern.base": "Name must only contain letters",
-    }),
+  name: Joi.string().min(2).max(16).pattern(stringPattern).required().messages({
+    "any.required": "Set name for pet",
+    "string.min": "Name must have at least 2 characters",
+    "string.max": "Name cannot exceed 16 characters",
+    "string.pattern.base": "Name must only contain letters",
+  }),
   birthday: Joi.string()
     .required()
     .regex(datePattern)
     .custom((value, helpers) => {
-      const date = moment(value, 'DD.MM.YYYY');
+      const date = moment(value, "DD.MM.YYYY");
       if (!date.isValid()) {
-        return helpers.error('string.dateInvalid');
+        return helpers.error("string.dateInvalid");
       }
       return date.toDate();
     })
     .messages({
-      'any.required': 'Set birthday for pet',
-      'string.pattern.base': 'Invalid date format',
-      'string.dateInvalid': 'Invalid date',
-  }),
-  breed: Joi.string()
-    .min(2)
-    .max(16)
-    .pattern(stringPattern)
-    .required()
-    .messages({
-      "any.required": "Set type of breed",
-      "string.min": "Breed must have at least 2 characters",
-      "string.max": "Breed cannot exceed 16 characters",
-      "string.pattern.base": "Breed must only contain letters",
+      "any.required": "Set birthday for pet",
+      "string.pattern.base": "Invalid date format",
+      "string.dateInvalid": "Invalid date",
     }),
+  breed: Joi.string().min(2).max(16).pattern(stringPattern).required().messages({
+    "any.required": "Set type of breed",
+    "string.min": "Breed must have at least 2 characters",
+    "string.max": "Breed cannot exceed 16 characters",
+    "string.pattern.base": "Breed must only contain letters",
+  }),
+  comments: Joi.string().min(8).max(320).allow("").messages({
+    "string.min": "Comments must have at least 8 characters",
+    "string.max": "Comments cannot exceed 320 characters",
+  }),
+  avatar: Joi.string().optional(),
+}).options({ abortEarly: false });
+
+const updatePetJoiSchema = Joi.object({
+  name: Joi.string().min(2).max(16).pattern(stringPattern).messages({
+    "any.required": "Set name for pet",
+    "string.min": "Name must have at least 2 characters",
+    "string.max": "Name cannot exceed 16 characters",
+    "string.pattern.base": "Name must only contain letters",
+  }),
+  birthday: Joi.string()
+
+    .regex(datePattern)
+    .custom((value, helpers) => {
+      const date = moment(value, "DD.MM.YYYY");
+      if (!date.isValid()) {
+        return helpers.error("string.dateInvalid");
+      }
+      return date.toDate();
+    })
+    .messages({
+      "any.required": "Set birthday for pet",
+      "string.pattern.base": "Invalid date format",
+      "string.dateInvalid": "Invalid date",
+    }),
+  breed: Joi.string().min(2).max(16).pattern(stringPattern).messages({
+    "any.required": "Set type of breed",
+    "string.min": "Breed must have at least 2 characters",
+    "string.max": "Breed cannot exceed 16 characters",
+    "string.pattern.base": "Breed must only contain letters",
+  }),
   comments: Joi.string().min(8).max(320).allow("").messages({
     "string.min": "Comments must have at least 8 characters",
     "string.max": "Comments cannot exceed 320 characters",
@@ -103,6 +128,7 @@ const addPetJoiSchema = Joi.object({
 const Pet = model("pet", petSchema);
 
 module.exports = {
-    Pet,
-    addPetJoiSchema
-}
+  Pet,
+  addPetJoiSchema,
+  updatePetJoiSchema,
+};
