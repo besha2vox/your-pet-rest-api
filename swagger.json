@@ -193,7 +193,7 @@
                 },
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/NoticeRequestBody"
+                    "$ref": "#/components/schemas/GetNoticeResponse"
                   },
                   {
                     "if": {
