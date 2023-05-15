@@ -542,7 +542,7 @@
           },
           {
             "in": "query",
-            "name": "q",
+            "name": "query",
             "required": true,
 
             "type": "string",
