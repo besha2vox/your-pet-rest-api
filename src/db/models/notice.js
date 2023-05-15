@@ -38,6 +38,26 @@ const noticeSchema = Schema(
         return this.category === "sell";
       },
       min: [1, "Price must be higher than 0"],
+      validate: [
+        {
+          validator: function (value) {
+            return this.category !== "sell" || value != null;
+          },
+          message: "Price is required for category 'sell'",
+        },
+        {
+          validator: function (value) {
+            return this.category === "sell" || value == null;
+          },
+          message: "Price is not allowed for categories other than 'sell'",
+        },
+        {
+          validator: function (value) {
+            return value == null || value >= 1;
+          },
+          message: "Price must be higher than 0",
+        },
+      ],
     },
     sex: {
       type: String,
