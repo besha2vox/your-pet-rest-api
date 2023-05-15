@@ -17,4 +17,16 @@ router.get("/current", auth, ctrl.getCurrent);
 // Log out
 router.post("/logout", auth, ctrl.logout);
 
+// Verification
+router.get("/verify/:verificationToken", ctrl.verify);
+
+// Update User
+router.put("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUser);
+
+// Get info about user and user's pets
+router.get("/:id", auth, ctrl.getUserInfo);
+
+// Update info about user and user's pets
+router.patch("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUserInfo);
+
 module.exports = router;
