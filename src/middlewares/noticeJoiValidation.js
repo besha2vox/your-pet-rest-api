@@ -2,6 +2,7 @@ const Joi = require("joi");
 const moment = require("moment");
 
 const { RequestError } = require("../helpers");
+
 const datePattern = /^\d{2}\.\d{2}\.\d{4}$/;
 
 const addNoticeJoiSchema = Joi.object({
@@ -130,4 +131,7 @@ const updateNoticeValidation = (req, _, next) => {
   next();
 };
 
-module.exports = { noticeValidation, updateNoticeValidation };
+module.exports = {
+  noticeValidation,
+  updateNoticeValidation,
+};

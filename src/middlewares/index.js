@@ -8,6 +8,13 @@ const {
   noticeValidation,
   updateNoticeValidation,
 } = require("./noticeJoiValidation");
+const {
+  registerSchema,
+  loginSchema,
+  refreshSchema,
+  updateUserSchema,
+  emailSchema,
+} = require("./userJoiValidation");
 
 module.exports = {
   validation,
@@ -17,4 +24,9 @@ module.exports = {
   uploadCloud,
   noticeValidation,
   updateNoticeValidation,
+  registerSchema,
+  loginSchema,
+  refreshSchema,
+  updateUserSchema,
+  emailSchema,
 };

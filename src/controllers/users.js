@@ -3,18 +3,10 @@ const jwt = require("jsonwebtoken");
 const { User, Pet } = require("../db/models");
 
 const { RequestError } = require("../helpers");
-const { controllerWrap } = require("../utils/validation");
+const { controllerWrap, generateToken } = require("../utils/validation");
 const { v4: uuidv4 } = require("uuid");
 
-const { SECRET_KEY } = process.env;
-
-const generateToken = (id) => {
-  const payload = {
-    id,
-  };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "12h" });
-  return token;
-};
+const { REFRESH_SECRET_KEY } = process.env;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -33,11 +25,12 @@ const register = async (req, res) => {
       verificationToken,
     });
 
-    const token = generateToken(result._id);
-    await User.findByIdAndUpdate(result._id, { token });
+    const tokens = generateToken(result._id);
+    await User.findByIdAndUpdate(result._id, { tokens });
 
     res.status(201).json({
-      token,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
       user: {
         username: result.username,
         email: result.email,
@@ -45,7 +38,9 @@ const register = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(error.status || 500).json({ message: error.message || "Internal server error" });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Internal server error" });
   }
 };
 
@@ -67,11 +62,12 @@ const login = async (req, res) => {
       throw new RequestError(400, "Email or password is wrong");
     }
 
-    const token = generateToken(user._id);
-    await User.findByIdAndUpdate(user._id, { token });
+    const tokens = generateToken(user._id);
+    await User.findByIdAndUpdate(user._id, { tokens });
 
     res.status(201).json({
-      token,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
       user: {
         username: user.username,
         email,
@@ -79,7 +75,39 @@ const login = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(error.status || 500).json({ message: error.message || "Internal server error" });
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Internal server error" });
+  }
+};
+
+const refresh = async (req, res) => {
+  const { refreshToken } = req.body;
+  try {
+    const { id } = jwt.verify(refreshToken, REFRESH_SECRET_KEY);
+    const user = await User.findById(id);
+
+    if (!user) {
+      throw new RequestError(403, "Invalid token");
+    }
+
+    if (refreshToken !== user.tokens.refreshToken) {
+      throw new RequestError(403, "Invalid token");
+    }
+
+    const tokens = generateToken(user._id);
+    user.tokens = tokens;
+    await user.save();
+
+    res.json({
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(error.status || 500)
+      .json({ message: error.message || "Internal server error" });
   }
 };
 
@@ -93,7 +121,7 @@ const getCurrent = async (req, res) => {
 
 const logout = async (req, res) => {
   const { _id } = req.user;
-  await User.findByIdAndUpdate(_id, { token: "" });
+  await User.findByIdAndUpdate(_id, { accessToken: "", refreshToken: "" });
 
   res.status(204).json();
 };
@@ -109,7 +137,10 @@ const verify = async (req, res) => {
     throw RequestError(400, "Verification has already been passed");
   }
 
-  await User.findByIdAndUpdate(user._id, { verify: true, verificationToken: "" });
+  await User.findByIdAndUpdate(user._id, {
+    verify: true,
+    verificationToken: "",
+  });
 
   res.status(200).json({ message: "Verification successful" });
 };
@@ -180,6 +211,7 @@ const updateUserPets = async (req, res) => {
 module.exports = {
   register: controllerWrap(register),
   login: controllerWrap(login),
+  refresh: controllerWrap(refresh),
   getCurrent: controllerWrap(getCurrent),
   logout: controllerWrap(logout),
   verify: controllerWrap(verify),
