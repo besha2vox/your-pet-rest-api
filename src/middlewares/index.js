@@ -3,7 +3,6 @@ const ctrlWrapper = require("./ctrlWrapper");
 const isValidId = require("./isValidId");
 const auth = require("./auth");
 const uploadCloud = require("./uploadCloud");
-const { filterByQueries } = require("./filterByQueries");
 
 const {
   noticeValidation,
@@ -18,5 +17,4 @@ module.exports = {
   uploadCloud,
   noticeValidation,
   updateNoticeValidation,
-  filterByQueries,
 };
