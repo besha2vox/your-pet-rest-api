@@ -105,13 +105,45 @@
         }
       }
     },
+    "/api/users/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Refresh token",
+        "requestBody": {
+          "description": "Refresh access token using valid refreshToken",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Token successfully refreshed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid token"
+          }
+        }
+      }
+    },
     "/api/users/current": {
       "get": {
         "tags": ["Auth"],
         "summary": "Get current user",
         "security": [{ "Bearer": [] }],
         "responses": {
-          "200": {
+          "204": {
             "description": "Current user retrieved successfully",
             "content": {
               "content": {
@@ -902,9 +934,13 @@
       "RegistrationResponse": {
         "type": "object",
         "properties": {
-          "token": {
+          "accessToken": {
             "type": "string",
             "description": "Access token for the logged-in user"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token for the logged-in user"
           },
           "user": {
             "type": "object",
@@ -920,6 +956,29 @@
                 "format": "email"
               }
             }
+          }
+        }
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "required": ["refreshToken"],
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token for the logged-in user"
+          }
+        }
+      },
+      "RefreshTokenResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Access token for the logged-in user"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token for the logged-in user"
           }
         }
       },
@@ -941,9 +1000,13 @@
       "LoginResponse": {
         "type": "object",
         "properties": {
-          "token": {
+          "accessToken": {
             "type": "string",
             "description": "Access token for the logged-in user"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token for the logged-in user"
           },
           "user": {
             "type": "object",
