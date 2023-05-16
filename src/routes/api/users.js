@@ -11,6 +11,9 @@ router.post("/register", validation(schemas.registerSchema), ctrl.register);
 // Log in
 router.post("/login", validation(schemas.loginSchema), ctrl.login);
 
+// Refresh
+router.post("/refresh", validation(schemas.refreshSchema), ctrl.refresh);
+
 // Get current User
 router.get("/current", auth, ctrl.getCurrent);
 
@@ -27,6 +30,11 @@ router.put("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUser);
 router.get("/:id", auth, ctrl.getUserInfo);
 
 // Update info about user and user's pets
-router.patch("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUserInfo);
+router.patch(
+  "/:id",
+  auth,
+  validation(schemas.updateUserSchema),
+  ctrl.updateUserInfo
+);
 
 module.exports = router;

@@ -23,10 +23,17 @@ const userSchema = new Schema(
       required: [true, "Password is required"],
       minlength: 8,
     },
-    token: {
-      type: String,
-      default: "",
+    tokens: {
+      accessToken: {
+        type: String,
+        default: "",
+      },
+      refreshToken: {
+        type: String,
+        default: "",
+      },
     },
+
     birthday: {
       type: String,
     },
@@ -81,6 +88,10 @@ const schemas = {
   loginSchema: Joi.object({
     email: Joi.string().pattern(emailRegex).required(),
     password: Joi.string().min(8).required(),
+  }),
+  // Refresh token schema
+  refreshSchema: Joi.object({
+    refreshToken: Joi.string().required(),
   }),
   // Update user schema
   updateUserSchema: Joi.object({
