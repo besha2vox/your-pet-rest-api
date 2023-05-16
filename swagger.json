@@ -38,12 +38,10 @@
     }
   ],
   "paths": {
-    "/auth/register": {
+    "/api/users/register": {
       "post": {
         "tags": ["Auth"],
-        "summary": "User registration",
-        "parameters": [],
-        "security": [{ "Bearer": [] }],
+        "summary": "Register new user",
         "requestBody": {
           "description": "Registration's object",
           "required": true,
@@ -57,7 +55,7 @@
         },
         "responses": {
           "201": {
-            "description": "Successful operation",
+            "description": "User registered successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -67,12 +65,81 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
-            "content": {}
+            "description": "Bad request"
           },
           "409": {
-            "description": "Provided email already exists",
-            "content": {}
+            "description": "Email in use"
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Log in a user",
+        "requestBody": {
+          "description": "Log in existing user",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email or password is wrong"
+          }
+        }
+      }
+    },
+    "/api/users/current": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get current user",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Current user retrieved successfully",
+            "content": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GetCurrentUserResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      }
+    },
+    "/api/users/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Log out of the current user",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "204": {
+            "description": "User logged out successfully"
+          },
+          "401": {
+            "description": "Not authorized"
           }
         }
       }
@@ -813,6 +880,51 @@
     "schemas": {
       "RegistrationRequest": {
         "type": "object",
+        "required": ["username", "email", "password"],
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "John Smith"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "Test1234"
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Access token for the logged-in user"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "username": {
+                "type": "string",
+                "description": "User's name",
+                "example": "John Smith"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              }
+            }
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
         "required": ["email", "password"],
         "properties": {
           "email": {
@@ -822,32 +934,46 @@
           },
           "password": {
             "type": "string",
-            "description": "User's password",
-            "example": "qwerty123"
+            "description": "User's password"
           }
         }
       },
-      "RegistrationResponse": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "email": {
-              "type": "string",
-              "description": "User's email",
-              "format": "email"
-            },
-            "userId": {
-              "type": "number",
-              "description": "User's id",
-              "example": "32143232436545474"
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Access token for the logged-in user"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "username": {
+                "type": "string",
+                "description": "User's name",
+                "example": "John Smith"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              }
             }
           }
-        },
-        "example": [
-          { "email": "1@gmail.com", "userId": "1" },
-          { "email": "2@gmail.com", "userId": "2" }
-        ]
+        }
+      },
+      "GetCurrentUserResponse": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "The username of the current user"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email of the current user"
+          }
+        }
       },
 
       "GetNoticeResponse": {
