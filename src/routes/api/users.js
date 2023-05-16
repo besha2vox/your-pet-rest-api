@@ -6,6 +6,7 @@ const {
   refreshSchema,
   updateUserSchema,
 } = require("../../middlewares");
+const { schemas, updatePetJoiSchema } = require("../../db/models");
 const { users: ctrl } = require("../../controllers");
 
 const router = express.Router();
@@ -36,5 +37,7 @@ router.get("/:id", auth, ctrl.getUserInfo);
 
 // Update info about user and user's pets
 router.patch("/:id", auth, validation(updateUserSchema), ctrl.updateUserInfo);
+
+router.put("/pets/:id", auth, validation(updatePetJoiSchema), ctrl.updateUserPets);
 
 module.exports = router;

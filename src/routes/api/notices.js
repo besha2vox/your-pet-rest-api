@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const { auth, uploadCloud } = require("../../middlewares");
-
 const {
+  auth,
+  uploadCloud,
   noticeValidation,
   updateNoticeValidation,
 } = require("../../middlewares");
+
 const { notices: ctrl } = require("../../controllers");
 
 router.get("/", auth, ctrl.getUsersNotices);

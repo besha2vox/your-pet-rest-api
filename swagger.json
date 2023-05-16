@@ -196,6 +196,26 @@
             "description": "Count of articles per page. Default 6."
           },
           {
+            "in": "query",
+            "name": "gender",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["male", "female"]
+            }
+          },
+          {
+            "in": "query",
+            "name": "age",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["3m-12m", "1y", "2y"]
+            },
+
+            "description": "value for filter by age"
+          },
+          {
             "in": "path",
             "name": "category",
             "required": true,
@@ -622,12 +642,33 @@
             "type": "string",
             "description": "Page number for pagination. Default 1."
           },
+
           {
             "in": "query",
             "name": "limit",
             "required": false,
             "type": "string",
             "description": "Count of articles per page. Default 12."
+          },
+          {
+            "in": "query",
+            "name": "gender",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["male", "female"]
+            }
+          },
+          {
+            "in": "query",
+            "name": "age",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["3m-12m", "1y", "2y"]
+            },
+
+            "description": "value for filter by age"
           },
           {
             "in": "path",
@@ -641,7 +682,7 @@
           },
           {
             "in": "query",
-            "name": "q",
+            "name": "query",
             "required": true,
 
             "type": "string",
