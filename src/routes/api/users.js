@@ -1,18 +1,23 @@
 const express = require("express");
 const { validation, auth } = require("../../middlewares");
-const { schemas } = require("../../db/models");
+const {
+  registerSchema,
+  loginSchema,
+  refreshSchema,
+  updateUserSchema,
+} = require("../../middlewares");
 const { users: ctrl } = require("../../controllers");
 
 const router = express.Router();
 
 // Register
-router.post("/register", validation(schemas.registerSchema), ctrl.register);
+router.post("/register", validation(registerSchema), ctrl.register);
 
 // Log in
-router.post("/login", validation(schemas.loginSchema), ctrl.login);
+router.post("/login", validation(loginSchema), ctrl.login);
 
 // Refresh
-router.post("/refresh", validation(schemas.refreshSchema), ctrl.refresh);
+router.post("/refresh", validation(refreshSchema), ctrl.refresh);
 
 // Get current User
 router.get("/current", auth, ctrl.getCurrent);
@@ -24,17 +29,12 @@ router.post("/logout", auth, ctrl.logout);
 router.get("/verify/:verificationToken", ctrl.verify);
 
 // Update User
-router.put("/:id", auth, validation(schemas.updateUserSchema), ctrl.updateUser);
+router.put("/:id", auth, validation(updateUserSchema), ctrl.updateUser);
 
 // Get info about user and user's pets
 router.get("/:id", auth, ctrl.getUserInfo);
 
 // Update info about user and user's pets
-router.patch(
-  "/:id",
-  auth,
-  validation(schemas.updateUserSchema),
-  ctrl.updateUserInfo
-);
+router.patch("/:id", auth, validation(updateUserSchema), ctrl.updateUserInfo);
 
 module.exports = router;

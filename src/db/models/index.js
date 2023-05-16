@@ -1,4 +1,4 @@
-const { User, schemas } = require("./user");
+const { User } = require("./user");
 const { News } = require("./news");
 const { Pet } = require("./pets");
 const Notice = require("./notice");
@@ -10,7 +10,6 @@ module.exports = {
   News,
   Pet,
   Notice,
-  schemas,
   Friends,
   Cat,
 };
