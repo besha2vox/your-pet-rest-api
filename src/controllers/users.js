@@ -32,6 +32,7 @@ const register = async (req, res) => {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
       user: {
+        id: result._id,
         username: result.username,
         email: result.email,
       },
@@ -69,6 +70,7 @@ const login = async (req, res) => {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
       user: {
+        id: user._id,
         username: user.username,
         email,
       },
@@ -112,8 +114,10 @@ const refresh = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { username, email } = req.user;
+  const { _id, username, email } = req.user;
+  console.log(req.user);
   res.json({
+    id: _id,
     username,
     email,
   });
@@ -149,7 +153,9 @@ const updateUser = async (req, res) => {
   const { _id } = req.user;
   const data = await req.body;
 
-  const updatedUserData = await User.findByIdAndUpdate(_id, data, { new: true });
+  const updatedUserData = await User.findByIdAndUpdate(_id, data, {
+    new: true,
+  });
 
   if (!updatedUserData) {
     throw new RequestError(400, `Error: user is not updated`);
@@ -194,10 +200,15 @@ const updateUserPets = async (req, res) => {
     throw new RequestError(404, `Pet with id: ${petId} is not found`);
   }
   if (pet.owner?.toString() !== ownerId?.toString()) {
-    throw new RequestError(403, `User has no access to update the pet with id  ${petId}`);
+    throw new RequestError(
+      403,
+      `User has no access to update the pet with id  ${petId}`
+    );
   }
   const petData = await req.body;
-  const data = req.file ? { ...petData, avatarURL: req.file.path } : { ...petData };
+  const data = req.file
+    ? { ...petData, avatarURL: req.file.path }
+    : { ...petData };
 
   const updateUserPet = await Pet.findByIdAndUpdate(petId, data, { new: true });
 
