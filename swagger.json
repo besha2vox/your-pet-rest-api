@@ -11,10 +11,7 @@
   },
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json", "multipart/form-data"],
-  "servers": [
-    { "url": "https://your-pet-by-it-kotiki.onrender.com" },
-    { "url": "http://localhost:3000" }
-  ],
+  "servers": [{ "url": "https://your-pet-by-it-kotiki.onrender.com" }, { "url": "http://localhost:3000" }],
   "tags": [
     {
       "name": "Auth",
@@ -176,6 +173,153 @@
         }
       }
     },
+
+    "/api/users/:id": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get User info and user's pets",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Get information about user by id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "404": {
+            "description": "No info found of user's pet",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": ["Auth"],
+        "summary": "Update user info",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Update information about user by id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserInfoResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "400": {
+            "description": "The user is not updated",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/pets/:id": {
+      "put": {
+        "tags": ["Auth"],
+        "summary": "Update info about user's pet",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Update information about user's pet by id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostPetsResponse"
+                }
+              }
+            }
+          },
+
+          "400": {
+            "description": "The user is not updated",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          },
+          "403": {
+            "description": "User has no access to update the pet",
+            "content": {}
+          },
+          "404": {
+            "description": "The pet is not found",
+            "content": {}
+          }
+        }
+      }
+    },
+
     "/api/notices/{category}": {
       "get": {
         "tags": ["Notices"],
@@ -1076,6 +1220,68 @@
           "email": {
             "type": "string",
             "description": "The email of the current user"
+          }
+        }
+      },
+
+      "GetUserInfoResponse": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "The username of the user"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email of the user"
+          },
+          "phone": {
+            "type": "string",
+            "description": "The phone number of the user"
+          },
+          "city": {
+            "type": "string",
+            "description": "Name of the user's city",
+            "example": "Kyiv"
+          },
+          "birthday": {
+            "type": "string",
+            "description": "The user's birthday",
+            "example": "11.12.2022"
+          },
+          "pet": {
+            "type": "array",
+            "description": "The user's pets",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "description": "User's pet id from DB"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Bob"
+                },
+                "birthday": {
+                  "type": "string",
+                  "description": "Pet's birthday",
+                  "example": "11.12.2022"
+                },
+                "breed": {
+                  "type": "string",
+                  "example": "Husky"
+                },
+                "comments": {
+                  "type": "string",
+                  "description": "Something about your pet"
+                },
+                "avatarURL": {
+                  "type": "string",
+                  "description": "Link to photo your pet"
+                }
+              }
+            }
           }
         }
       },
