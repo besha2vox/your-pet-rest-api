@@ -39,9 +39,7 @@ const register = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res
-      .status(error.status || 500)
-      .json({ message: error.message || "Internal server error" });
+    res.status(error.status || 500).json({ message: error.message || "Internal server error" });
   }
 };
 
@@ -77,9 +75,7 @@ const login = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res
-      .status(error.status || 500)
-      .json({ message: error.message || "Internal server error" });
+    res.status(error.status || 500).json({ message: error.message || "Internal server error" });
   }
 };
 
@@ -107,9 +103,7 @@ const refresh = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res
-      .status(error.status || 500)
-      .json({ message: error.message || "Internal server error" });
+    res.status(error.status || 500).json({ message: error.message || "Internal server error" });
   }
 };
 
@@ -151,7 +145,8 @@ const verify = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { _id } = req.user;
-  const data = await req.body;
+  const userData = await req.body;
+  const data = req.file ? { ...userData, avatarURL: req.file.path } : { ...userData };
 
   const updatedUserData = await User.findByIdAndUpdate(_id, data, {
     new: true,
@@ -200,15 +195,10 @@ const updateUserPets = async (req, res) => {
     throw new RequestError(404, `Pet with id: ${petId} is not found`);
   }
   if (pet.owner?.toString() !== ownerId?.toString()) {
-    throw new RequestError(
-      403,
-      `User has no access to update the pet with id  ${petId}`
-    );
+    throw new RequestError(403, `User has no access to update the pet with id  ${petId}`);
   }
   const petData = await req.body;
-  const data = req.file
-    ? { ...petData, avatarURL: req.file.path }
-    : { ...petData };
+  const data = req.file ? { ...petData, avatarURL: req.file.path } : { ...petData };
 
   const updateUserPet = await Pet.findByIdAndUpdate(petId, data, { new: true });
 
