@@ -1,5 +1,5 @@
 const express = require("express");
-const { validation, auth } = require("../../middlewares");
+const { validation, auth, uploadCloud } = require("../../middlewares");
 const { registerSchema, loginSchema, refreshSchema, updateUserSchema } = require("../../middlewares");
 const { updatePetJoiSchema } = require("../../db/models");
 const { users: ctrl } = require("../../controllers");
@@ -25,7 +25,7 @@ router.post("/logout", auth, ctrl.logout);
 router.get("/verify/:verificationToken", ctrl.verify);
 
 // Update User
-router.put("/:id", auth, validation(updateUserSchema), ctrl.updateUser);
+router.put("/:id", auth, uploadCloud.single("pets-photo"), validation(updateUserSchema), ctrl.updateUser);
 
 // Get info about user and user's pets
 router.get("/:id", auth, ctrl.getUserInfo);

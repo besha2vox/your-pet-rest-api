@@ -1,8 +1,7 @@
 const Joi = require("joi");
 
 const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-const mobileRegex =
-  /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+const mobileRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 
 // Create new user schema
 const registerSchema = Joi.object({
@@ -21,9 +20,10 @@ const refreshSchema = Joi.object({
 });
 // Update user schema
 const updateUserSchema = Joi.object({
+  username: Joi.string(),
+  email: Joi.string().pattern(emailRegex),
   birthday: Joi.string()
     .pattern(/^([0-2]\d|3[0-1])\.(0\d|1[0-2])\.\d{4}$/)
-    .required()
     .messages({
       "any.required": "Set your birthday",
       "date.base": "Invalid date format",
@@ -33,9 +33,11 @@ const updateUserSchema = Joi.object({
     .messages({
       "any.required": "Set your city",
     }),
-  phone: Joi.string().pattern(mobileRegex).required().messages({
+  phone: Joi.string().pattern(mobileRegex).messages({
     "any.required": "Set your phone number",
   }),
+
+  avatarURL: Joi.string(),
 });
 
 const emailSchema = Joi.object({
