@@ -724,6 +724,13 @@
             "required": false,
             "type": "string",
             "description": "Count of articles per page. Default 6."
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "required": false,
+            "type": "string",
+            "description": "The query for search"
           }
         ],
         "responses": {
@@ -793,6 +800,13 @@
             "required": false,
             "type": "string",
             "description": "Count of articles per page. Default 12."
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "required": false,
+            "type": "string",
+            "description": "The query for search"
           },
           {
             "in": "query",
