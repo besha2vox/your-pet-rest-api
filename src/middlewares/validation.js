@@ -1,6 +1,5 @@
 const validation = (schema) => {
     return (req, _, next) => {
-        console.log('kurwa');
         const { error } = schema.validate(req.body);
         if (error) {
             error.status = 400;

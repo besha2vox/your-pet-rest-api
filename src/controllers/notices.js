@@ -11,7 +11,6 @@ const addNotice = async (req, res) => {
       throw new RequestError(400, `there is no body content`);
     }
     const noticeData = req.body;
-    console.log(noticeData, "noticeData");
     if (!req.file) {
       throw new RequestError(400, `no file uploaded`);
     }
@@ -87,7 +86,6 @@ const addNotice = async (req, res) => {
   
       if (gender) {
         ageQuery.sex = gender.toLowerCase();
-        console.log(ageQuery.sex, "ageQuery.sex");
       }
   
       if (age) {
@@ -186,7 +184,6 @@ const addNotice = async (req, res) => {
   
     const { page = 1, limit = 12 } = req.query;
     const skip = (page - 1) * limit;
-    console.log(owner, "owner");
     const notices = await Notice.find({ owner }, "-createdAt -updatedAt", {
       skip,
       limit: Number(limit),
@@ -283,7 +280,6 @@ const addNotice = async (req, res) => {
   
       if (gender) {
         ageQuery.sex = gender.toLowerCase();
-        console.log(ageQuery.sex, "ageQuery.sex");
       }
   
       if (age) {
@@ -366,7 +362,6 @@ const addNotice = async (req, res) => {
     const data = req.file
       ? { ...noticeData, avatarURL: req.file.path }
       : { ...noticeData };
-    console.log(data, "data");
   
     const updatedNotice = await Notice.findByIdAndUpdate(noticeId, data, {
       new: true,

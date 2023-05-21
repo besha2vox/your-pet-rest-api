@@ -1,12 +1,10 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const { cats: ctrl } = require("../../controllers");
-const { auth, uploadCloud } = require("../../middlewares");
+const { cats: ctrl } = require('../../controllers');
 
-router.get("/", ctrl.getAllCats);
+router.get('/', ctrl.getAllCats);
 
-router.post("/", auth, uploadCloud.single("pets-photo"), ctrl.addCat);
-router.delete("/:id", auth, ctrl.deleteCatById);
+router.get('/:id', ctrl.getCatById);
 
 module.exports = router;

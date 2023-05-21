@@ -18,103 +18,77 @@ const register = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, 10);
 
     const verificationToken = uuidv4();
-    try {
-        const result = await User.create({
-            ...req.body,
-            password: hashPassword,
-            verificationToken,
-        });
 
-        const tokens = generateToken(result._id);
-        await User.findByIdAndUpdate(result._id, { tokens });
+    const result = await User.create({
+        ...req.body,
+        password: hashPassword,
+        verificationToken,
+    });
 
-        res.status(201).json({
-            accessToken: tokens.accessToken,
-            refreshToken: tokens.refreshToken,
-            user: {
-                id: result._id,
-                username: result.username,
-                email: result.email,
-            },
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(error.status || 500).json({
-            message: error.message || 'Internal server error',
-        });
-    }
+    const tokens = generateToken(result._id);
+    await User.findByIdAndUpdate(result._id, { tokens });
+
+    res.status(201).json({
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        user: {
+            id: result._id,
+            username: result.username,
+            email: result.email,
+        },
+    });
 };
 
 const login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
-        if (!user) {
-            throw new RequestError(400, 'Email or password is wrong');
-        }
-
-        // if (!user.verify) {
-        //   throw RequestError(401, "Email not verify");
-        // }
-
-        const comparePassword = await bcrypt.compare(password, user.password);
-        if (!comparePassword) {
-            throw new RequestError(400, 'Email or password is wrong');
-        }
-
-        const tokens = generateToken(user._id);
-        await User.findByIdAndUpdate(user._id, { tokens });
-
-        res.status(201).json({
-            accessToken: tokens.accessToken,
-            refreshToken: tokens.refreshToken,
-            user: {
-                id: user._id,
-                username: user.username,
-                email,
-            },
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(error.status || 500).json({
-            message: error.message || 'Internal server error',
-        });
+    if (!user) {
+        throw new RequestError(400, 'Email or password is wrong');
     }
+    const comparePassword = await bcrypt.compare(password, user.password);
+    if (!comparePassword) {
+        throw new RequestError(400, 'Email or password is wrong');
+    }
+
+    const tokens = generateToken(user._id);
+    await User.findByIdAndUpdate(user._id, { tokens });
+
+    res.status(201).json({
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        user: {
+            id: user._id,
+            username: user.username,
+            email,
+        },
+    });
 };
 
 const refresh = async (req, res) => {
     const { refreshToken } = req.body;
-    try {
-        const { id } = jwt.verify(refreshToken, REFRESH_SECRET_KEY);
-        const user = await User.findById(id);
+    const { id } = jwt.verify(refreshToken, REFRESH_SECRET_KEY);
+    const user = await User.findById(id);
 
-        if (!user) {
-            throw new RequestError(403, 'Invalid token');
-        }
-
-        if (refreshToken !== user.tokens.refreshToken) {
-            throw new RequestError(403, 'Invalid token');
-        }
-
-        const tokens = generateToken(user._id);
-        await User.findByIdAndUpdate(user._id, { tokens });
-
-        res.json({
-            accessToken: tokens.accessToken,
-            refreshToken: tokens.refreshToken,
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(error.status || 500).json({
-            message: error.message || 'Internal server error',
-        });
+    if (!user) {
+        throw new RequestError(403, 'Invalid token');
     }
+
+    if (refreshToken !== user.tokens.refreshToken) {
+        throw new RequestError(403, 'Invalid token');
+    }
+
+    const tokens = generateToken(user._id);
+    await User.findByIdAndUpdate(user._id, { tokens });
+
+    res.json({
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+    });
 };
 
 const getCurrent = async (req, res) => {
     const { _id, username, email } = req.user;
-    console.log(req.user);
     res.json({
         id: _id,
         username,
@@ -127,25 +101,6 @@ const logout = async (req, res) => {
     await User.findByIdAndUpdate(_id, { accessToken: '', refreshToken: '' });
 
     res.status(204).json();
-};
-
-const verify = async (req, res) => {
-    const { verificationToken } = req.params;
-    const user = await User.findOne({ verificationToken });
-    if (!user) {
-        throw RequestError(404, 'User not found');
-    }
-
-    if (user.verify) {
-        throw RequestError(400, 'Verification has already been passed');
-    }
-
-    await User.findByIdAndUpdate(user._id, {
-        verify: true,
-        verificationToken: '',
-    });
-
-    res.status(200).json({ message: 'Verification successful' });
 };
 
 const getUserInfo = async (req, res) => {
@@ -194,7 +149,6 @@ const updateUser = async (req, res, next) => {
 
 const updateStatus = async (req, res, next) => {
     const { _id: ownerId } = req.user;
-    console.log(req.body);
     const { firstVisit } = req.body;
 
     const result = await User.findByIdAndUpdate(
@@ -215,7 +169,6 @@ module.exports = {
     refresh: controllerWrap(refresh),
     getCurrent: controllerWrap(getCurrent),
     logout: controllerWrap(logout),
-    verify: controllerWrap(verify),
     updateUser: controllerWrap(updateUser),
     getUserInfo: controllerWrap(getUserInfo),
     updateStatus: controllerWrap(updateStatus),

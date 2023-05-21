@@ -26,9 +26,6 @@ router.get('/current', auth, ctrl.getCurrent);
 // Log out
 router.post('/logout', auth, ctrl.logout);
 
-// Verification
-router.get('/verify/:verificationToken', ctrl.verify);
-
 // Update User
 router.put(
     '/',
