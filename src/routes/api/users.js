@@ -32,7 +32,7 @@ router.get('/verify/:verificationToken', ctrl.verify);
 
 // Update User
 router.put(
-    '/:id',
+    '/',
     auth,
     uploadCloud.single('pets-photo'),
     validation(updateUserSchema),
