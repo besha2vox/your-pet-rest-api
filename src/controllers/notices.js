@@ -180,20 +180,22 @@ const addNotice = async (req, res) => {
           ageQuery.birthday = {
             $gte: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
             $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
-          };
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
         } else if (age === "2y") {
           ageQuery.birthday = {
-            $lt: new Date(maxBirthYear - 2, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
           };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
         } else if (age === "3m-12m") {
+
           ageQuery.birthday = {
-            $gte: new Date(
-              maxBirthYear - 1,
-              today.getMonth() - 3,
-              today.getDate()
-            ),
-            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
-          };
+            $gte: new Date(maxBirthYear + 1, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear + 2, today.getMonth() -3, today.getDate()),
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
         } else {
           throw new RequestError(404, `wrong age parameter`);
         }
@@ -266,20 +268,22 @@ const addNotice = async (req, res) => {
           ageQuery.birthday = {
             $gte: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
             $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
-          };
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
         } else if (age === "2y") {
           ageQuery.birthday = {
-            $lt: new Date(maxBirthYear - 2, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
           };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
         } else if (age === "3m-12m") {
+
           ageQuery.birthday = {
-            $gte: new Date(
-              maxBirthYear - 1,
-              today.getMonth() - 3,
-              today.getDate()
-            ),
-            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
-          };
+            $gte: new Date(maxBirthYear + 1, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear + 2, today.getMonth() -3, today.getDate()),
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
         } else {
           throw new RequestError(404, `wrong age parameter`);
         }
@@ -394,22 +398,24 @@ const addNotice = async (req, res) => {
   
         if (age === "1y") {
           ageQuery.birthday = {
-            $gte: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
-            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
-          };
+            $gte: new Date(maxBirthYear - 2, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear -1, today.getMonth(), today.getDate()),
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
         } else if (age === "2y") {
           ageQuery.birthday = {
-            $lt: new Date(maxBirthYear - 2, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
           };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
         } else if (age === "3m-12m") {
+
           ageQuery.birthday = {
-            $gte: new Date(
-              maxBirthYear - 1,
-              today.getMonth() - 3,
-              today.getDate()
-            ),
-            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
-          };
+            $gte: new Date(maxBirthYear + 1, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear + 2, today.getMonth() -3, today.getDate()),
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
         } else {
           throw new RequestError(404, `wrong age parameter`);
         }
@@ -417,23 +423,15 @@ const addNotice = async (req, res) => {
   
       Object.assign(searchQuery, ageQuery);
     }
-  
     const notices = await Notice.find(searchQuery, "-createdAt -updatedAt", {
       skip,
       limit: Number(limit),
     }).sort({ createdAt: -1 });
   
-    if (!notices || notices.length === 0) {
-      throw new RequestError(404, `no match for your search`);
-    }
-    const totalHits = await Notice.countDocuments({
-      $and: [
-        { category },
-        {
-          $or: regexExpressions,
-        },
-      ],
-    });
+    // if (!notices || notices.length === 0) {
+    //   throw new RequestError(404, `no match for your search`);
+    // }
+    const totalHits = await Notice.countDocuments(searchQuery);
   
     res.status(200).json({
       result: notices,
