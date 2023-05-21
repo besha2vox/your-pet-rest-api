@@ -139,7 +139,7 @@ const addNotice = async (req, res) => {
   const getFavoriteNotices = async (req, res) => {
     const { _id: ownerId } = req.user;
   
-    const { page = 1, limit = 12, query = ""} = req.query;
+    const { page = 1, limit = 12, query = "", gender, age} = req.query;
     const skip = (page - 1) * limit;
   
 
@@ -165,11 +165,44 @@ const addNotice = async (req, res) => {
       ],
     };
 
+    if (gender || age) {
+      const ageQuery = {};
+  
+      if (gender) {
+        ageQuery.sex = gender.toLowerCase();
+      }
+  
+      if (age) {
+        const today = new Date();
+        const maxBirthYear = today.getFullYear() - parseInt(age) + 1;
+  
+        if (age === "1y") {
+          ageQuery.birthday = {
+            $gte: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
+          };
+        } else if (age === "2y") {
+          ageQuery.birthday = {
+            $lt: new Date(maxBirthYear - 2, today.getMonth(), today.getDate()),
+          };
+        } else if (age === "3m-12m") {
+          ageQuery.birthday = {
+            $gte: new Date(
+              maxBirthYear - 1,
+              today.getMonth() - 3,
+              today.getDate()
+            ),
+            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
+          };
+        } else {
+          throw new RequestError(404, `wrong age parameter`);
+        }
+      }
+  
+      Object.assign(searchQuery, ageQuery);
+    }
 
-
-
-    
-    const notices = await Notice.find(
+      const notices = await Notice.find(
       searchQuery,
       "-favorite"
     )
@@ -178,9 +211,7 @@ const addNotice = async (req, res) => {
       .limit(limit)
       .populate("owner", "name ");
   
-    const totalCount = await Notice.countDocuments({
-      _id: { $in: favoriteNotices },
-    });
+    const totalCount = await Notice.countDocuments(searchQuery);
   
     res.status(200).json({
       result: notices,
@@ -203,7 +234,7 @@ const addNotice = async (req, res) => {
   const getUsersNotices = async (req, res) => {
     const { _id: owner } = req.user;
   
-    const { page = 1, limit = 12, query = "" } = req.query;
+    const { page = 1, limit = 12, query = "", age, gender } = req.query;
     const skip = (page - 1) * limit;
 
     const searchWords = query.trim().split(" ");
@@ -220,7 +251,42 @@ const addNotice = async (req, res) => {
         },
       ],
     };
-
+    if (gender || age) {
+      const ageQuery = {};
+  
+      if (gender) {
+        ageQuery.sex = gender.toLowerCase();
+      }
+  
+      if (age) {
+        const today = new Date();
+        const maxBirthYear = today.getFullYear() - parseInt(age) + 1;
+  
+        if (age === "1y") {
+          ageQuery.birthday = {
+            $gte: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
+          };
+        } else if (age === "2y") {
+          ageQuery.birthday = {
+            $lt: new Date(maxBirthYear - 2, today.getMonth(), today.getDate()),
+          };
+        } else if (age === "3m-12m") {
+          ageQuery.birthday = {
+            $gte: new Date(
+              maxBirthYear - 1,
+              today.getMonth() - 3,
+              today.getDate()
+            ),
+            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
+          };
+        } else {
+          throw new RequestError(404, `wrong age parameter`);
+        }
+      }
+  
+      Object.assign(searchQuery, ageQuery);
+    }
     const notices = await Notice.find(searchQuery, "-createdAt -updatedAt", {
       skip,
       limit: Number(limit),
@@ -231,9 +297,12 @@ const addNotice = async (req, res) => {
     if (!notices) {
       throw new RequestError(404, `no match for your request`);
     }
+    const totalCount = await Notice.countDocuments(searchQuery);
   
-    res.status(201).json({
-      result: notices,
+    res.status(200).json({
+          result: notices,
+      hits: notices.length,
+      totalHits: totalCount,
     });
   };
 
