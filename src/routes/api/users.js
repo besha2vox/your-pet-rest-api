@@ -7,7 +7,6 @@ const {
     updateUserSchema,
     updateStatusSchema,
 } = require('../../middlewares');
-const { updatePetJoiSchema } = require('../../db/models');
 const { users: ctrl } = require('../../controllers');
 
 const router = express.Router();
