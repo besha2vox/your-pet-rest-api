@@ -42,14 +42,6 @@ router.put(
 // Get info about user and user's pets
 router.get('/:id', auth, ctrl.getUserInfo);
 
-// Update and user's pets
-router.put(
-    '/pets/:id',
-    auth,
-    validation(updatePetJoiSchema),
-    ctrl.updateUserPets
-);
-
 router.patch(
     '/status',
     auth,
