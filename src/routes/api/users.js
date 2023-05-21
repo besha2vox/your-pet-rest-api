@@ -50,4 +50,6 @@ router.put(
     ctrl.updateUserPets
 );
 
+router.patch('/:id', auth, validation());
+
 module.exports = router;

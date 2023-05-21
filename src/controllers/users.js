@@ -163,7 +163,7 @@ const getUserInfo = async (req, res) => {
 
     res.status(200).json({
         user: {
-            _id: userInfo._id,
+            id: userInfo._id,
             firstVisit: userInfo.firstVisit,
             username: userInfo.username,
             email: userInfo.email,
