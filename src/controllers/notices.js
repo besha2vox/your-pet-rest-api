@@ -139,17 +139,38 @@ const addNotice = async (req, res) => {
   const getFavoriteNotices = async (req, res) => {
     const { _id: ownerId } = req.user;
   
-    const { page = 1, limit = 12 } = req.query;
+    const { page = 1, limit = 12, query = ""} = req.query;
     const skip = (page - 1) * limit;
   
+
     const user = await User.findById(ownerId);
     if (!user) {
       throw new RequestError(404, `User with id: ${ownerId} is not found`);
     }
     const favoriteNotices = user.favorite;
   
+
+    const searchWords = query.trim().split(" ");
+
+    const regexExpressions = searchWords.map((word) => ({
+      titleOfAdd: { $regex: new RegExp(word, "i") },
+    }));
+
+    const searchQuery = {
+      $and: [
+        { _id: { $in: favoriteNotices } },
+        {
+          $or: regexExpressions,
+        },
+      ],
+    };
+
+
+
+
+    
     const notices = await Notice.find(
-      { _id: { $in: favoriteNotices } },
+      searchQuery,
       "-favorite"
     )
       .sort({ createdAt: -1 })
@@ -182,9 +203,25 @@ const addNotice = async (req, res) => {
   const getUsersNotices = async (req, res) => {
     const { _id: owner } = req.user;
   
-    const { page = 1, limit = 12 } = req.query;
+    const { page = 1, limit = 12, query = "" } = req.query;
     const skip = (page - 1) * limit;
-    const notices = await Notice.find({ owner }, "-createdAt -updatedAt", {
+
+    const searchWords = query.trim().split(" ");
+
+    const regexExpressions = searchWords.map((word) => ({
+      titleOfAdd: { $regex: new RegExp(word, "i") },
+    }));
+
+    const searchQuery = {
+      $and: [
+        { owner },
+        {
+          $or: regexExpressions,
+        },
+      ],
+    };
+
+    const notices = await Notice.find(searchQuery, "-createdAt -updatedAt", {
       skip,
       limit: Number(limit),
     })
