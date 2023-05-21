@@ -148,24 +148,6 @@ const verify = async (req, res) => {
     res.status(200).json({ message: 'Verification successful' });
 };
 
-const updateUser = async (req, res) => {
-    const { _id } = req.user;
-    const userData = await req.body;
-    const data = req.file
-        ? { ...userData, avatarURL: req.file.path }
-        : { ...userData };
-
-    const updatedUserData = await User.findByIdAndUpdate(_id, data, {
-        new: true,
-    });
-
-    if (!updatedUserData) {
-        throw new RequestError(400, `Error: user is not updated`);
-    }
-
-    res.status(200).json({ result: updatedUserData });
-};
-
 const getUserInfo = async (req, res) => {
     const { _id } = req.user;
     const userInfo = await User.findById(_id);
@@ -181,14 +163,36 @@ const getUserInfo = async (req, res) => {
 
     res.status(200).json({
         user: {
+            _id: userInfo._id,
+            firstVisit: userInfo.firstVisit,
             username: userInfo.username,
             email: userInfo.email,
             phone: userInfo.phone,
             city: userInfo.city,
             birthday: userInfo.birthday,
+            avatarURL: userInfo.avatarURL,
             pet: userPets,
         },
     });
+};
+
+const updateUser = async (req, res, next) => {
+    const { _id } = req.user;
+    const userData = await req.body;
+    const data = req.file
+        ? { ...userData, avatarURL: req.file.path }
+        : { ...userData };
+
+    const updatedUserData = await User.findByIdAndUpdate(_id, data, {
+        new: true,
+    });
+
+    if (!updatedUserData) {
+        throw new RequestError(400, `Error: user is not updated`);
+    }
+
+    next();
+    // res.status(200).json({ result: updatedUserData });
 };
 
 const updateUserPets = async (req, res) => {
