@@ -172,7 +172,7 @@ const addNotice = async (req, res) => {
 
   const getNoticeById = async (req, res) => {
     const { id } = req.params;
-    const notice = await Notice.findById(id);
+    const notice = await Notice.findById(id).populate("owner", "username email phone");
     if (!notice) {
       throw new RequestError(404, `Notice with id: ${id} is not found`);
     }
