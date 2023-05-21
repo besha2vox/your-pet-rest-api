@@ -45,10 +45,15 @@ const emailSchema = Joi.object({
     email: Joi.string().pattern(emailRegex).required(),
 });
 
+const updateStatusSchema = Joi.object({
+    firstVisit: Joi.boolean().required(),
+}).unknown(false);
+
 module.exports = {
     registerSchema,
     loginSchema,
     refreshSchema,
     updateUserSchema,
     emailSchema,
+    updateStatusSchema,
 };

@@ -183,16 +183,30 @@ const updateUser = async (req, res, next) => {
         ? { ...userData, avatarURL: req.file.path }
         : { ...userData };
 
-    const updatedUserData = await User.findByIdAndUpdate(_id, data, {
-        new: true,
-    });
+    const updatedUserData = await User.findByIdAndUpdate(_id, data);
 
     if (!updatedUserData) {
         throw new RequestError(400, `Error: user is not updated`);
     }
 
     next();
-    // res.status(200).json({ result: updatedUserData });
+};
+
+const updateStatus = async (req, res, next) => {
+    const { _id: ownerId } = req.user;
+    console.log(req.body);
+    const { firstVisit } = req.body;
+
+    const result = await User.findByIdAndUpdate(
+        { _id: ownerId },
+        { firstVisit }
+    );
+
+    if (!result) {
+        throw new RequestError(400, `Error: user is not updated`);
+    }
+
+    next();
 };
 
 const updateUserPets = async (req, res) => {
@@ -237,4 +251,5 @@ module.exports = {
     updateUser: controllerWrap(updateUser),
     getUserInfo: controllerWrap(getUserInfo),
     updateUserPets: controllerWrap(updateUserPets),
+    updateStatus: controllerWrap(updateStatus),
 };

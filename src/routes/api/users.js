@@ -5,6 +5,7 @@ const {
     loginSchema,
     refreshSchema,
     updateUserSchema,
+    updateStatusSchema,
 } = require('../../middlewares');
 const { updatePetJoiSchema } = require('../../db/models');
 const { users: ctrl } = require('../../controllers');
@@ -50,6 +51,12 @@ router.put(
     ctrl.updateUserPets
 );
 
-router.patch('/:id', auth, validation());
+router.patch(
+    '/status',
+    auth,
+    validation(updateStatusSchema),
+    ctrl.updateStatus,
+    ctrl.getUserInfo
+);
 
 module.exports = router;
