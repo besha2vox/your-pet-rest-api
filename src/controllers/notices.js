@@ -139,17 +139,73 @@ const addNotice = async (req, res) => {
   const getFavoriteNotices = async (req, res) => {
     const { _id: ownerId } = req.user;
   
-    const { page = 1, limit = 12 } = req.query;
+    const { page = 1, limit = 12, query = "", gender, age} = req.query;
     const skip = (page - 1) * limit;
   
+
     const user = await User.findById(ownerId);
     if (!user) {
       throw new RequestError(404, `User with id: ${ownerId} is not found`);
     }
     const favoriteNotices = user.favorite;
   
-    const notices = await Notice.find(
-      { _id: { $in: favoriteNotices } },
+
+    const searchWords = query.trim().split(" ");
+
+    const regexExpressions = searchWords.map((word) => ({
+      titleOfAdd: { $regex: new RegExp(word, "i") },
+    }));
+
+    const searchQuery = {
+      $and: [
+        { _id: { $in: favoriteNotices } },
+        {
+          $or: regexExpressions,
+        },
+      ],
+    };
+
+    if (gender || age) {
+      const ageQuery = {};
+  
+      if (gender) {
+        ageQuery.sex = gender.toLowerCase();
+      }
+  
+      if (age) {
+        const today = new Date();
+        const maxBirthYear = today.getFullYear() - parseInt(age) + 1;
+  
+        if (age === "1y") {
+          ageQuery.birthday = {
+            $gte: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
+        } else if (age === "2y") {
+          ageQuery.birthday = {
+            $lt: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
+          };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+        } else if (age === "3m-12m") {
+
+          ageQuery.birthday = {
+            $gte: new Date(maxBirthYear + 1, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear + 2, today.getMonth() -3, today.getDate()),
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
+        } else {
+          throw new RequestError(404, `wrong age parameter`);
+        }
+      }
+  
+      Object.assign(searchQuery, ageQuery);
+    }
+
+      const notices = await Notice.find(
+      searchQuery,
       "-favorite"
     )
       .sort({ createdAt: -1 })
@@ -157,9 +213,7 @@ const addNotice = async (req, res) => {
       .limit(limit)
       .populate("owner", "name ");
   
-    const totalCount = await Notice.countDocuments({
-      _id: { $in: favoriteNotices },
-    });
+    const totalCount = await Notice.countDocuments(searchQuery);
   
     res.status(200).json({
       result: notices,
@@ -182,9 +236,62 @@ const addNotice = async (req, res) => {
   const getUsersNotices = async (req, res) => {
     const { _id: owner } = req.user;
   
-    const { page = 1, limit = 12 } = req.query;
+    const { page = 1, limit = 12, query = "", age, gender } = req.query;
     const skip = (page - 1) * limit;
-    const notices = await Notice.find({ owner }, "-createdAt -updatedAt", {
+
+    const searchWords = query.trim().split(" ");
+
+    const regexExpressions = searchWords.map((word) => ({
+      titleOfAdd: { $regex: new RegExp(word, "i") },
+    }));
+
+    const searchQuery = {
+      $and: [
+        { owner },
+        {
+          $or: regexExpressions,
+        },
+      ],
+    };
+    if (gender || age) {
+      const ageQuery = {};
+  
+      if (gender) {
+        ageQuery.sex = gender.toLowerCase();
+      }
+  
+      if (age) {
+        const today = new Date();
+        const maxBirthYear = today.getFullYear() - parseInt(age) + 1;
+  
+        if (age === "1y") {
+          ageQuery.birthday = {
+            $gte: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
+        } else if (age === "2y") {
+          ageQuery.birthday = {
+            $lt: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
+          };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+        } else if (age === "3m-12m") {
+
+          ageQuery.birthday = {
+            $gte: new Date(maxBirthYear + 1, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear + 2, today.getMonth() -3, today.getDate()),
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
+        } else {
+          throw new RequestError(404, `wrong age parameter`);
+        }
+      }
+  
+      Object.assign(searchQuery, ageQuery);
+    }
+    const notices = await Notice.find(searchQuery, "-createdAt -updatedAt", {
       skip,
       limit: Number(limit),
     })
@@ -194,9 +301,12 @@ const addNotice = async (req, res) => {
     if (!notices) {
       throw new RequestError(404, `no match for your request`);
     }
+    const totalCount = await Notice.countDocuments(searchQuery);
   
-    res.status(201).json({
-      result: notices,
+    res.status(200).json({
+          result: notices,
+      hits: notices.length,
+      totalHits: totalCount,
     });
   };
 
@@ -288,22 +398,24 @@ const addNotice = async (req, res) => {
   
         if (age === "1y") {
           ageQuery.birthday = {
-            $gte: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
-            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
-          };
+            $gte: new Date(maxBirthYear - 2, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear -1, today.getMonth(), today.getDate()),
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
         } else if (age === "2y") {
           ageQuery.birthday = {
-            $lt: new Date(maxBirthYear - 2, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear - 1, today.getMonth(), today.getDate()),
           };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
         } else if (age === "3m-12m") {
+
           ageQuery.birthday = {
-            $gte: new Date(
-              maxBirthYear - 1,
-              today.getMonth() - 3,
-              today.getDate()
-            ),
-            $lt: new Date(maxBirthYear, today.getMonth(), today.getDate()),
-          };
+            $gte: new Date(maxBirthYear + 1, today.getMonth(), today.getDate()),
+            $lt: new Date(maxBirthYear + 2, today.getMonth() -3, today.getDate()),
+                    };
+          console.log(ageQuery.birthday, 'ageQuery.birthday')
+
         } else {
           throw new RequestError(404, `wrong age parameter`);
         }
@@ -311,23 +423,15 @@ const addNotice = async (req, res) => {
   
       Object.assign(searchQuery, ageQuery);
     }
-  
     const notices = await Notice.find(searchQuery, "-createdAt -updatedAt", {
       skip,
       limit: Number(limit),
     }).sort({ createdAt: -1 });
   
-    if (!notices || notices.length === 0) {
-      throw new RequestError(404, `no match for your search`);
-    }
-    const totalHits = await Notice.countDocuments({
-      $and: [
-        { category },
-        {
-          $or: regexExpressions,
-        },
-      ],
-    });
+    // if (!notices || notices.length === 0) {
+    //   throw new RequestError(404, `no match for your search`);
+    // }
+    const totalHits = await Notice.countDocuments(searchQuery);
   
     res.status(200).json({
       result: notices,
