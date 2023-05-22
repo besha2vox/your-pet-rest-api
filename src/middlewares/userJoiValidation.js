@@ -1,7 +1,8 @@
 const Joi = require("joi");
 const moment = require("moment");
 const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-const mobileRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+const mobileRegex =
+  /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 const dateRegex = /^\d{2}\.\d{2}\.\d{4}$/;
 
 // Create new user schema
@@ -9,6 +10,7 @@ const registerSchema = Joi.object({
   username: Joi.string().required(),
   email: Joi.string().pattern(emailRegex).required(),
   password: Joi.string().min(8).required(),
+  confirmPassword: Joi.string().min(8).required(),
 });
 // Log in with a user
 const loginSchema = Joi.object({

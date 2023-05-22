@@ -21,6 +21,11 @@ const userSchema = new Schema(
       required: [true, "Password is required"],
       minlength: 8,
     },
+    confirmPassword: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: 8,
+    },
     tokens: {
       accessToken: {
         type: String,
