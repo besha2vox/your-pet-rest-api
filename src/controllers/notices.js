@@ -60,7 +60,7 @@ const addNotice = async (req, res) => {
   
     updatedUser.password = undefined;
   
-    await Notice.findByIdAndUpdate(
+    const updatedNotice = await Notice.findByIdAndUpdate(
       noticeId,
       { $push: { favorite: userId } },
       { new: true }
@@ -68,7 +68,7 @@ const addNotice = async (req, res) => {
   
     res.json({
       result: {
-        updatedUser,
+        updatedNotice,
       },
     });
   };
@@ -329,14 +329,14 @@ const addNotice = async (req, res) => {
     );
   
     updatedUser.password = undefined;
-    await Notice.findByIdAndUpdate(
+    const updatedNotice = await Notice.findByIdAndUpdate(
       noticeId,
       { $pull: { favorite: { $eq: userId } } },
       { new: true }
     );
   
     res.json({
-      result: { updatedUser },
+      result: { updatedNotice },
     });
   };
 
