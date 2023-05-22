@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const moment = require("moment");
 const { handleMongooseError } = require("../../utils/validation");
 
 const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -32,7 +33,15 @@ const userSchema = new Schema(
     },
 
     birthday: {
-      type: String,
+      type: Date,
+      get: (v) => moment(v).format("DD.MM.YYYY"),
+      set: (v) => moment(v, "DD.MM.YYYY").toDate(),
+      validate: {
+        validator: function (value) {
+          return moment(value, "DD.MM.YYYY", true).isValid();
+        },
+        message: "Invalid birth date format (must be dd.mm.yyyy)",
+      },
     },
     phone: {
       type: String,
