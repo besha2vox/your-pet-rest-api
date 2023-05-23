@@ -6,17 +6,18 @@ const {
     uploadCloud,
     noticeValidation,
     updateNoticeValidation,
+    noticesFilter,
 } = require('../../middlewares');
 
 const { notices: ctrl } = require('../../controllers');
 
 router.get('/', auth, ctrl.getUsersNotices);
-router.get('/favorites', auth, ctrl.getFavoriteNotices);
+router.get('/favorites', auth, noticesFilter, ctrl.getFavoriteNotices);
 
 router.post('/favorite/:id', auth, ctrl.addToFavorite);
 router.delete('/favorite/:id', auth, ctrl.removeFromFavorite);
 
-router.get('/:category', ctrl.getByCategory);
+router.get('/:category', noticesFilter, ctrl.getByCategory);
 router.post(
     '/:category',
     auth,
@@ -25,7 +26,7 @@ router.post(
     ctrl.addNotice
 );
 
-router.get('/search/:category', ctrl.searchByTitle);
+router.get('/search/:category', noticesFilter, ctrl.searchByTitle);
 
 router.get('/notice/:id', ctrl.getNoticeById);
 router.delete('/notice/:id', auth, ctrl.removeNotice);
