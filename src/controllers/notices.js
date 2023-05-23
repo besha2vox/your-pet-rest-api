@@ -120,11 +120,9 @@ const addNotice = async (req, res) => {
     const notices = await Notice.find(searchQuery, "-createdAt -updatedAt", {
       skip,
       limit: Number(limit),
-    }).sort({ createdAt: -1 });
+    }).populate("owner", "username email phone").sort({ createdAt: -1 });
   
-    if (!notices) {
-      throw new RequestError(404, `no match for your request`);
-    }
+
     const totalCount = await Notice.countDocuments({
       category: { $regex: `^${category}`, $options: "i" },
     });
@@ -211,7 +209,7 @@ const addNotice = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("owner", "name ");
+      .populate("owner", "username email phone");
   
     const totalCount = await Notice.countDocuments(searchQuery);
   
@@ -296,7 +294,7 @@ const addNotice = async (req, res) => {
       limit: Number(limit),
     })
       .sort({ createdAt: -1 })
-      .populate("owner", "name email phone");
+      .populate("owner", "username email phone");
   
     if (!notices) {
       throw new RequestError(404, `no match for your request`);
@@ -426,7 +424,7 @@ const addNotice = async (req, res) => {
     const notices = await Notice.find(searchQuery, "-createdAt -updatedAt", {
       skip,
       limit: Number(limit),
-    }).sort({ createdAt: -1 });
+    }).populate("owner", "username email phone").sort({ createdAt: -1 });
   
     // if (!notices || notices.length === 0) {
     //   throw new RequestError(404, `no match for your search`);
