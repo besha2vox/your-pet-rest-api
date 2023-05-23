@@ -8,7 +8,7 @@ const getAllNews = async (req, res) => {
   const result = await News.find({}, "", {
     skip,
     limit: Number(limit),
-  });
+  }).sort({ date: -1 });
   const totalHints = await News.count();
 
   res.status(200).json({
