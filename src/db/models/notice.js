@@ -66,7 +66,7 @@ const noticeSchema = Schema(
     },
     comments: {
       type: String,
-      minlength: 8,
+      minlength: 2,
       maxlength: 120,
       required: [true, "add comment"],
     },
@@ -78,7 +78,7 @@ const noticeSchema = Schema(
     titleOfAdd: {
       type: String,
       required: [true, "add title to notice"],
-      minlength: 8,
+      minlength: 2,
       maxlength: 60,
       default: null,
     },

@@ -51,15 +51,15 @@ const addNoticeJoiSchema = Joi.object({
     "any.required": "Set sex for notice",
     "any.only": "Invalid sex value",
   }),
-  comments: Joi.string().min(8).max(120).allow(null).messages({
-    "string.min": "Comments must have at least 8 characters",
+  comments: Joi.string().max(120).allow(null).messages({
+
     "string.max": "Comments cannot exceed 120 characters",
   }),
   category: Joi.string().valid("sell", "lost-found", "in-good-hands").messages({
     "any.only": "Invalid category value",
   }),
-  titleOfAdd: Joi.string().min(8).max(60).messages({
-    "string.min": "Title of add must have at least 8 characters",
+  titleOfAdd: Joi.string().max(60).messages({
+
     "string.max": "Title of add cannot exceed 60 characters",
   }),
   favorite: Joi.array(),
@@ -99,15 +99,15 @@ const updateNoticeJoiSchema = Joi.object({
   sex: Joi.string().valid("male", "female").messages({
     "any.only": "Invalid sex value",
   }),
-  comments: Joi.string().min(8).max(120).allow(null).messages({
-    "string.min": "Comments must have at least 8 characters",
+  comments: Joi.string().max(120).allow(null).messages({
+
     "string.max": "Comments cannot exceed 120 characters",
   }),
   category: Joi.string().valid("sell", "lost-found", "in-good-hands").messages({
     "any.only": "Invalid category value",
   }),
-  titleOfAdd: Joi.string().min(8).max(60).messages({
-    "string.min": "Title of add must have at least 8 characters",
+  titleOfAdd: Joi.string().max(60).messages({
+
     "string.max": "Title of add cannot exceed 60 characters",
   }),
   favorite: Joi.array(),
