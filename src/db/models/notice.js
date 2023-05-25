@@ -26,7 +26,7 @@ const noticeSchema = Schema(
             type: String,
             required: [true, 'Set type of breed'],
             minlength: 2,
-            maxlength: 16,
+            maxlength: 30,
         },
         location: {
             type: String,
