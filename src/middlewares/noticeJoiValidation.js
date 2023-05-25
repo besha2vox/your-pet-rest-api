@@ -32,7 +32,7 @@ const addNoticeJoiSchema = Joi.object({
     }),
   breed: Joi.string()
     .min(2)
-    .max(16)
+    .max(30)
 
     .required()
     .messages({
