@@ -11,7 +11,7 @@ const {
 
 const { notices: ctrl } = require('../../controllers');
 
-router.get('/', auth, ctrl.getUsersNotices);
+router.get('/', auth, noticesFilter, ctrl.getUsersNotices);
 router.get('/favorites', auth, noticesFilter, ctrl.getFavoriteNotices);
 
 router.post('/favorite/:id', auth, ctrl.addToFavorite);
